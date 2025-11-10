@@ -1,4 +1,4 @@
-# Place a copy of this config to ~/.aerospace.toml
+ Place a copy of this config to ~/.aerospace.toml
 # After that, you can edit ~/.aerospace.toml to your liking
 
 # You can use it to add commands that run after login to macOS user session.
@@ -15,7 +15,7 @@ after-startup-command = [
 ]
 
 # Start AeroSpace at login
-start-at-login = true
+start-at-login = false
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -73,6 +73,7 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 
 [workspace-to-monitor-force-assignment]
 6 = 'built-in'
+7 = 'built-in'
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -112,10 +113,10 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     cmd-alt-shift-comma = 'layout accordion horizontal vertical'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-    cmd-alt-shift-c = 'focus left'
-    cmd-alt-shift-a = 'focus down'
-    cmd-alt-shift-e = 'focus up'
-    cmd-alt-shift-i = 'focus right'
+    cmd-alt-shift-left = 'focus left'
+    cmd-alt-shift-down = 'focus down'
+    cmd-alt-shift-up = 'focus up'
+    cmd-alt-shift-right = 'focus right'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move
     cmd-alt-shift-ctrl-c = 'move left'
@@ -124,22 +125,26 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     cmd-alt-shift-ctrl-i = 'move right'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-    cmd-alt-shift-o = 'resize smart -50'
-    cmd-alt-shift-u = 'resize smart +50'
+    cmd-alt-shift-minus = 'resize smart -50'
+    cmd-alt-shift-equal = 'resize smart +50'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
+    cmd-alt-shift-1 = 'workspace 1'
+    cmd-alt-shift-2 = 'workspace 2'
+    cmd-alt-shift-3 = 'workspace 3'
+    cmd-alt-shift-4 = 'workspace 4'
+    cmd-alt-shift-5 = 'workspace 5'
     cmd-alt-shift-6 = 'workspace 6'
     cmd-alt-shift-7 = 'workspace 7'
-    cmd-alt-shift-8 = 'workspace 8'
-    cmd-alt-shift-9 = 'workspace 9'
-    cmd-alt-shift-0 = 'workspace 0'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
+    cmd-alt-shift-ctrl-1 = 'move-node-to-workspace 1'
+    cmd-alt-shift-ctrl-2 = 'move-node-to-workspace 2'
+    cmd-alt-shift-ctrl-3 = 'move-node-to-workspace 3'
+    cmd-alt-shift-ctrl-4 = 'move-node-to-workspace 4'
+    cmd-alt-shift-ctrl-5 = 'move-node-to-workspace 5'
     cmd-alt-shift-ctrl-6 = 'move-node-to-workspace 6'
     cmd-alt-shift-ctrl-7 = 'move-node-to-workspace 7'
-    cmd-alt-shift-ctrl-8 = 'move-node-to-workspace 8'
-    cmd-alt-shift-ctrl-9 = 'move-node-to-workspace 9'
-    cmd-alt-shift-ctrl-0 = 'move-node-to-workspace 0'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     cmd-alt-shift-tab = 'workspace-back-and-forth'
@@ -148,6 +153,8 @@ exec-on-workspace-change = ['/bin/bash', '-c',
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#mode
     cmd-alt-shift-semicolon = 'mode service'
+
+    cmd-alt-shift-w = 'layout floating tiling'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -168,3 +175,6 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     # down = 'volume down'
     # up = 'volume up'
     # shift-down = ['volume set 0', 'mode main']
+[[on-window-detected]]
+    if.app-id = 'org.godotengine.godot'
+    run = 'layout floating'

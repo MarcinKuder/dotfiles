@@ -33,12 +33,42 @@ default=(
 )
 sketchybar --default "${default[@]}"
 
-sketchybar --add event aerospace_workspace_change
+# Aerospace
+# sketchybar --add event aerospace_workspace_change
+# for sid in $(aerospace list-workspaces --all); do
+#   sketchybar --add item space.$sid left \
+#     --subscribe space.$sid aerospace_workspace_change \
+#     --set space.$sid \
+#     icon.padding_left=0 \
+#     icon.padding_right=0 \
+#     label.padding_left=10 \
+#     label.padding_right=10 \
+#     background.padding_left=0 \
+#     background.padding_right=0 \
+#     background.color=0x44ffffff \
+#     background.corner_radius=5 \
+#     background.height=20 \
+#     background.drawing=off \
+#     label="$sid" \
+#     click_script="aerospace workspace $sid" \
+#     script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+# done
+#
+# for sid in $(aerospace list-windows --all --format %{workspace} | sort -u); do
+#   sketchybar --set space.$sid \
+#     label.color=$RED
+# done
 
-for sid in $(aerospace list-workspaces --all); do
-  sketchybar --add item space.$sid left \
-    --subscribe space.$sid aerospace_workspace_change \
-    --set space.$sid \
+# Flashspace
+sketchybar --add event flashspace_workspace_change
+
+SID=1
+WORKSPACES=$(/Applications/FlashSpace.app/Contents/Resources/flashspace list-workspaces)
+
+for workspace in $WORKSPACES; do
+  sketchybar --add item flashspace.$SID left \
+    --subscribe flashspace.$SID flashspace_workspace_change \
+    --set flashspace.$SID \
     icon.padding_left=0 \
     icon.padding_right=0 \
     label.padding_left=10 \
@@ -49,15 +79,12 @@ for sid in $(aerospace list-workspaces --all); do
     background.corner_radius=5 \
     background.height=20 \
     background.drawing=off \
-    label="$sid" \
-    click_script="aerospace workspace $sid" \
-    script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+    label="$workspace" \
+    script="$CONFIG_DIR/plugins/flashspace.sh $workspace"
+
+  SID=$((SID + 1))
 done
 
-# for sid in $(aerospace list-windows --all --format %{workspace} | sort -u); do
-#   sketchybar --set space.$sid \
-#     label.color=$RED
-# done
 
 ##### Adding Left Items #####
 # We add some regular items to the left side of the bar, where
