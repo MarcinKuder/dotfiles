@@ -1,0 +1,10 @@
+# Ignore everything
+/*
+
+# But not these folders
+!/nvim/
+!/aerospace/
+!/borders/
+!/sketchybar/
+!/doom/
+doom/config.el

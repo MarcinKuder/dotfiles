@@ -1,0 +1,574 @@
+#+TITLE: Doom Emacs Configuration
+#+AUTHOR: Marcin
+#+PROPERTY: header-args:emacs-lisp :tangle yes :results silent
+
+* Introduction
+
+This is my personal Doom Emacs configuration, written as a literate Org file.
+Doom will automatically tangle this to =config.el= on startup.
+
+* UI
+** Theme
+
+Using the Tomorrow Night theme from Doom's collection.
+
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-tomorrow-night)
+#+end_src
+
+** Font
+
+Using Maple Mono NF (Nerd Font) for good Unicode coverage.
+
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Maple Mono NF" :size 14))
+#+end_src
+
+** Window
+
+Maximize window on startup.
+
+#+begin_src emacs-lisp
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+#+end_src
+
+** Miscellaneous
+
+Disable exit confirmation prompt.
+
+#+begin_src emacs-lisp
+(setq confirm-kill-emacs nil)
+#+end_src
+
+* Org Mode
+** Directory
+
+Set the org directory before org loads.
+
+#+begin_src emacs-lisp
+(setq org-directory "~/org")
+#+end_src
+
+** Agenda and Logging
+
+#+begin_src emacs-lisp
+(after! org
+  (setq org-agenda-start-with-log-mode t)
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t))
+#+end_src
+
+** Org Archive
+
+Archive to a datetree structure.
+
+#+begin_src emacs-lisp
+(use-package! org-archive
+  :after org
+  :config
+  (setq org-archive-location "archive.org::datetree/"))
+#+end_src
+
+** Org Super Agenda
+
+#+begin_src emacs-lisp
+(use-package! org-super-agenda
+  :after org-agenda
+  :config
+  (org-super-agenda-mode))
+#+end_src
+
+** Org Google Calendar
+
+Sync with Google Calendar. Credentials stored in authinfo.
+
+#+begin_src emacs-lisp
+(require 'auth-source)
+(setq org-gcal-client-id ""
+      org-gcal-client-secret (funcall (plist-get (car (auth-source-search :host "calendar.google.com")) :secret))
+      org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
+(require 'org-gcal)
+#+end_src
+
+** Reformat Buffer
+
+Helper function to reformat an org buffer by re-parsing and re-inserting.
+
+#+begin_src emacs-lisp
+(defun mq/org-reformat-buffer ()
+  (interactive)
+  (when (y-or-n-p "Really format current buffer? ")
+    (let ((document (org-element-interpret-data (org-element-parse-buffer))))
+      (erase-buffer)
+      (insert document)
+      (goto-char (point-min)))))
+#+end_src
+
+* Denote
+
+Denote is a simple note-taking system with a predictable file-naming scheme.
+
+#+begin_src emacs-lisp
+(use-package! denote
+  :hook
+  ((text-mode . denote-fontify-links-mode-maybe)
+   (dired-mode . denote-dired-mode))
+
+  :bind
+  (("C-c n n" . denote)
+   ("C-c n d" . denote-dired)
+   ("C-c n g" . denote-grep)
+   ("C-c n l" . denote-link)
+   ("C-c n L" . denote-add-links)
+   ("C-c n b" . denote-backlinks)
+   ("C-c n q c" . denote-query-contents-link)
+   ("C-c n q f" . denote-query-filenames-link)
+   ("C-c n r" . denote-rename-file)
+   ("C-c n R" . denote-rename-file-using-front-matter)
+   :map dired-mode-map
+   ("C-c C-d C-i" . denote-dired-link-marked-notes)
+   ("C-c C-d C-r" . denote-dired-rename-files)
+   ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
+   ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
+
+  :config
+  (setq denote-directory (expand-file-name "~/Documents/notes/"))
+  (setq denote-save-buffers nil)
+  (setq denote-known-keywords '("emacs" "kb"))
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-excluded-directories-regexp nil)
+  (setq denote-excluded-keywords-regexp nil)
+  (setq denote-rename-confirmations '(rewrite-front-matter modify-file-name))
+  (setq denote-dired-directories-include-subdirectories t)
+  (setq denote-date-prompt-use-org-read-date t)
+
+  (defun +denote/search-in-all-notes ()
+    (interactive)
+    (consult-ripgrep denote-directory))
+
+  (denote-rename-buffer-mode 1))
+#+end_src
+
+* Programming Languages
+** Odin
+
+Using tree-sitter mode with LSP support.
+
+#+begin_src emacs-lisp
+(use-package! odin-ts-mode
+  :mode "\\.odin\\'")
+
+(add-hook 'odin-ts-mode-hook #'lsp-deferred)
+#+end_src
+
+** GDScript (Godot)
+
+#+begin_src emacs-lisp
+(setq gdscript-godot-executable "/Applications/Godot.app/Contents/MacOS/Godot")
+#+end_src
+
+** Zig
+
+#+begin_src emacs-lisp
+(setq lsp-zig-zls-executable "/Users/marcin/proj/zig/zls/zig-out/bin/zls")
+(setq lsp-zig-zig-exe-path "/opt/homebrew/bin/zig")
+#+end_src
+
+* Copilot
+
+GitHub Copilot integration for code completion.
+
+#+begin_src emacs-lisp
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)
+              ("C-n" . 'copilot-next-completion)
+              ("C-p" . 'copilot-previous-completion))
+
+  :config
+  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+  (add-to-list 'copilot-indentation-alist '(org-mode 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
+#+end_src
+
+* Shell Configuration
+
+Use bash for internal shell commands (fish doesn't work well with Emacs internals),
+but fish for terminal emulators.
+
+#+begin_src emacs-lisp
+(setq shell-file-name (executable-find "bash"))
+(setq-default vterm-shell "/opt/homebrew/bin/fish")
+(setq-default explicit-shell-file-name "/opt/homebrew/bin/fish")
+#+end_src
+
+* External Tools
+** Neovim in Ghostty
+
+Open current file/project in Neovim via Ghostty terminal.
+
+#+begin_src emacs-lisp
+(defun mq/ghostty-nvim-current-dir ()
+  "Opens a new Ghostty terminal in the current file path, or the project directory"
+  (interactive)
+  (let* ((target-path (or (buffer-file-name)
+                          (when (fboundp 'projectile-project-root) (projectile-project-root))
+                          (when (fboundp 'project-current) (project-root (project-current)))
+                          default-directory
+                          (getenv "HOME")))
+         (script-path (expand-file-name "~/bin/open-nvim-ghostty.sh"))
+         (quoted-script-path (shell-quote-argument script-path))
+         (quoted-path (shell-quote-argument target-path))
+         (full-command (format "%s %s > /dev/null 2>&1 & disown"
+                               quoted-script-path
+                               quoted-path)))
+    (if (file-exists-p script-path)
+        (progn
+          (message "Calling script for Neovim with target: %s" target-path)
+          (shell-command full-command)
+          (select-window (minibuffer-selected-window)))
+      (user-error "Shell script not found. Expected: %s. Did you save it and run 'chmod +x'?" script-path))))
+#+end_src
+
+** Exec Path
+
+Ensure Emacs can find executables in =~/.local/bin=.
+
+#+begin_src emacs-lisp
+(add-to-list 'exec-path "/Users/marcin/.local/bin")
+#+end_src
+
+* Keybindings
+
+Global leader keybindings.
+
+#+begin_src emacs-lisp
+(map! :leader :desc "Open Dired" "e" #'dired-jump)
+(map! :leader :desc "Open nvim" "o n" 'mq/ghostty-nvim-current-dir)
+(map! :leader :desc "Comment line" "-" #'comment-line)
+#+end_src
+
+* Meow Modal Editing
+
+Meow is a modal editing system, an alternative to Evil mode.
+
+** Utility Functions
+
+#+begin_src emacs-lisp
+(defun meow-word ()
+  "Expand word/symbol under cursor."
+  (interactive)
+  (if (and (use-region-p)
+           (equal (car (region-bounds))
+                  (bounds-of-thing-at-point 'word)))
+      (meow-mark-symbol 1)
+    (progn
+      (when (and (mark)
+                 (equal (car (region-bounds))
+                        (bounds-of-thing-at-point 'symbol)))
+        (meow-pop-selection))
+      (meow-mark-word 1))))
+
+(defun meow-kill-line ()
+  "Kill till the end of line."
+  (interactive)
+  (let ((select-enable-clipboard meow-use-clipboard))
+    (kill-line)))
+
+(defun meow-change-line ()
+  "Kill till end of line and switch to INSERT state."
+  (interactive)
+  (meow--cancel-selection)
+  (meow-end-of-thing
+   (car (rassoc 'line meow-char-thing-table)))
+  (meow-change))
+
+(defun meow-save-clipboard ()
+  "Copy in clipboard."
+  (interactive)
+  (let ((meow-use-clipboard t))
+    (meow-save)))
+
+(defvar meow--trim-yank nil)
+
+(defun meow-insert-for-yank-advice (orig-fn str)
+  "Advice for `insert-for-yank' function to correctly insert lines."
+  (when meow--trim-yank
+    (setq str (string-trim-right str "\n")))
+  (if (and (not (eq (point) (+ 1 (line-end-position 0))))
+           (string-match-p "^.+\n$" str))
+      (save-excursion
+        (beginning-of-line)
+        (funcall orig-fn str))
+    (funcall orig-fn str)))
+
+(defun meow-yank-dwim ()
+  "Smart yank."
+  (interactive)
+  (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
+  (if (use-region-p)
+      (let ((meow--trim-yank t))
+        (delete-region (region-beginning) (region-end))
+        (meow-yank))
+    (meow-yank))
+  (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
+
+(defun meow-yank-pop-dwim ()
+  "Smart yank pop."
+  (interactive)
+  (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
+  (if (use-region-p)
+      (let ((meow--trim-yank t))
+        (delete-region (region-beginning) (region-end))
+        (meow-yank-pop))
+    (meow-yank-pop))
+  (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
+
+(defun meow-smart-reverse ()
+  "Reverse selection or begin negative argument."
+  (interactive)
+  (if (use-region-p)
+      (meow-reverse)
+    (negative-argument nil)))
+
+(defun meow-kmacro ()
+  "Toggle recording of kmacro."
+  (interactive)
+  (if defining-kbd-macro
+      (meow-end-kmacro)
+    (meow-start-kmacro)))
+
+(defun meow-eldoc ()
+  "Toggle the display of the eldoc window."
+  (interactive)
+  (if (get-buffer-window eldoc--doc-buffer)
+      (delete-window (get-buffer-window eldoc--doc-buffer))
+    (eldoc-doc-buffer t)))
+#+end_src
+
+** Thing Table
+
+Custom thing definitions for meow selection.
+
+#+begin_src emacs-lisp
+(meow-thing-register 'angle
+                     '(pair ("<") (">"))
+                     '(pair ("<") (">")))
+
+(setq meow-char-thing-table
+      '((?r . round)
+        (?s . square)
+        (?c . curly)
+        (?a . angle)
+        (?g . string)
+        (?p . paragraph)
+        (?l . line)
+        (?b . buffer)))
+#+end_src
+
+** Key Mappings
+
+Custom QWERTY-based layout with home row navigation (h/a/e/i instead of h/j/k/l).
+
+#+begin_src emacs-lisp
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-define-key
+   '("a" . meow-next)
+   '("e" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("^" . negative-argument)
+   '("b" . meow-join)
+   '(";" . meow-reverse)
+   '("k" . meow-inner-of-thing)
+   '("K" . meow-bounds-of-thing)
+   '("y" . meow-beginning-of-thing)
+   '("," . meow-end-of-thing)
+   '("s" . meow-append)
+   '("S" . meow-open-below)
+   '("'" . meow-back-word)
+   '("\"" . meow-back-symbol)
+   '("c" . meow-change)
+   '("x" . meow-delete)
+   '("X" . meow-backward-delete)
+   '("/" . meow-next-word)
+   '("?" . meow-next-symbol)
+   '("f" . meow-find)
+   '("F" . meow-pop-to-mark)
+   '("<" . meow-unpop-to-mark)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("n" . meow-insert)
+   '("N" . meow-open-above)
+   '("a" . meow-next)
+   '("A" . meow-next-expand)
+   '("e" . meow-prev)
+   '("E" . meow-prev-expand)
+   '("i" . meow-right)
+   '("I" . meow-right-expand)
+   '("j" . repeat)
+   '("z" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("w" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("R" . meow-replace)
+   '("d" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . undo-redo)
+   '("v" . meow-visit)
+   '("." . meow-mark-word)
+   '(">" . meow-mark-symbol)
+   '("l" . meow-line)
+   '("L" . meow-goto-line)
+   '("m" . meow-save)
+   '("Z" . meow-pop-selection)
+   '("{" . backward-paragraph)
+   '("}" . forward-paragraph)
+   '(":" . execute-extended-command)
+   '("$" . save-buffer)
+   '("_" . avy-goto-char-timer)
+   '("-" . switch-to-buffer)
+   '("#" . comment-line)
+   '("=" . +lookup/references)
+   '("*" . magit)
+   '("<escape>" . ignore)))
+
+(meow-setup)
+#+end_src
+
+* Faces and Theming
+** Font Lock Faces
+
+Customize syntax highlighting colors using Doom's theme colors.
+
+#+begin_src emacs-lisp
+(custom-set-faces!
+  `(font-lock-function-name-face :foreground ,(doom-color 'aqua) :weight bold)
+  `(font-lock-function-call-face :foreground ,(doom-color 'aqua))
+  `(font-lock-keyword-face :foreground ,(doom-color 'orange) :weight bold)
+  `(font-lock-type-face :foreground ,(doom-color 'green) :weight bold)
+  `(font-lock-variable-name-face :foreground ,(doom-color 'blue))
+  `(font-lock-constant-face :foreground ,(doom-color 'purple) :weight bold)
+  `(font-lock-comment-face :foreground ,(doom-color 'grey) :slant italic)
+  `(font-lock-string-face :foreground ,(doom-color 'green)))
+#+end_src
+
+** Meow Faces
+
+Subtle position highlight numbers.
+
+#+begin_src emacs-lisp
+(after! meow
+  (custom-set-faces!
+    `(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    `(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    `(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
+    `(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+#+end_src
+
+* Claude Code IDE
+
+Integration with Claude Code CLI.
+
+#+begin_src emacs-lisp
+(use-package! claude-code-ide
+  :init
+  (setq claude-code-ide-cli-path "/Users/marcin/.local/bin/claude")
+  :bind ("C-c C-'" . claude-code-ide-menu)
+  :config
+  (claude-code-ide-emacs-tools-setup))
+#+end_src
+
+** Anti-Flicker Settings
+
+Prevent UI flicker when Claude Code displays spinners and Unicode characters.
+
+*** Character Widths
+
+Set character widths for Unicode ranges used by Claude Code spinners/UI.
+
+#+begin_src emacs-lisp
+(dolist (range '((#x23FA . #x23FA)   ; bullet
+                 (#x2700 . #x27BF)   ; Dingbats (spinner chars)
+                 (#x2200 . #x22FF)   ; Math operators
+                 (#x2800 . #x28FF)   ; Braille patterns (common spinners)
+                 (#x25A0 . #x25FF)   ; Geometric shapes
+                 (#x2580 . #x259F)   ; Block elements
+                 (#x2500 . #x257F)   ; Box drawing
+                 (#x1F500 . #x1F5FF) ; Miscellaneous symbols
+                 (#xE000 . #xF8FF))) ; Private use area (Nerd Fonts)
+  (set-char-table-range char-width-table range 1))
+#+end_src
+
+*** Font Setup
+
+Use main font for Unicode ranges to prevent font fallback flicker.
+
+#+begin_src emacs-lisp
+(defun my/setup-claude-fontset ()
+  "Set up fonts for Claude Code Unicode characters to prevent flicker."
+  (let ((font "Maple Mono NF"))
+    (set-fontset-font t '(#x23FA . #x23FA) font)
+    (set-fontset-font t '(#x2700 . #x27BF) font)
+    (set-fontset-font t '(#x2800 . #x28FF) font)
+    (set-fontset-font t '(#x25A0 . #x25FF) font)
+    (set-fontset-font t '(#x2580 . #x259F) font)))
+
+(my/setup-claude-fontset)
+(add-hook 'after-setting-font-hook #'my/setup-claude-fontset)
+#+end_src
+
+*** Global Settings
+
+#+begin_src emacs-lisp
+(setq redisplay-skip-fontification-on-input t)
+(setq fast-but-imprecise-scrolling t)
+(blink-cursor-mode -1)
+#+end_src
+
+*** Vterm Settings
+
+#+begin_src emacs-lisp
+(after! vterm
+  (setq vterm-timer-delay 0.2)
+  (setq vterm-buffer-name-string nil)
+  (setq vterm-max-scrollback 5000))
+
+(setenv "CLAUDE_CODE_DISABLE_TERMINAL_TITLE" "1")
+#+end_src
