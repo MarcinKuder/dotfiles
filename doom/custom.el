@@ -13,7 +13,7 @@
  '(elfeed-feeds
    '("https://updates.orgmode.org/feed/changes"
      "https://planet.emacslife.com/atom.xml"))
- '(package-selected-packages '(kanagawa-themes))
+ '(package-selected-packages '(kanagawa-themes web-server))
  '(size-indication-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: Reveal slide
+# uuid: 
+# key: slide
+# condition: t
+# --
+
+:REVEAL_PROPERTIES:
+#+OPTIONS: reveal_width:1400 reveal_height:1000 num:nil
+#+REVEAL_THEME: blood
+#+REVEAL_EXTRA_CSS: mq.css
+#+REVEAL_TITLE_SLIDE: 
+:END:
+

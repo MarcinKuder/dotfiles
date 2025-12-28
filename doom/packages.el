@@ -51,21 +51,31 @@
 ;; (package! odin-mode
 ;;   :recipe (:host github :repo "mattt-b/odin-mode"))
 
-;; Or use the WIP tree-sitter mode
-;; (package! odin-ts-mode
-;; :recipe (:host github :repo "Sampie159/odin-ts-mode"))
+(package! odin-ts-mode
+  :recipe (:host github :repo "Sampie159/odin-ts-mode"))
 
-                                        ; (package! odin-ts-mode :recipe (:host github :repo "Sampie159/odin-ts-mode") :pin "495f425018531828a8304dc45288779e58d869ad")
+;; (package! odin-mode :recipe (:host srht :repo "mgmarlow/odin-mode"))
 
 ;; Denote
 (package! denote)
-(package! denote-journal)
 
 (package! tldr)
 
-(package! copilot
-  :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
+(package! copilot :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
+
+(package! copilot-chat
+  :recipe (:host github :repo "chep/copilot-chat.el" :files ("*.el")))
 
 (package! org-super-agenda)
 
 (package! org-gcal)
+
+(package! dired-du)
+
+;;; claude-code-ide.el
+(package! claude-code-ide
+  ;; :recipe (:host github :repo "anthropics/claude-code-ide.el"))
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
+;; (package! web-server)
+
+;;;

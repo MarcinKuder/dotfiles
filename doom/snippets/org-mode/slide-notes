@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Slide notes
+# uuid: 
+# key: slide-notes
+# condition: t
+# --
+
+#+BEGIN_NOTES
+
+#+END_NOTES
