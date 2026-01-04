@@ -7,8 +7,17 @@
 This is my personal Doom Emacs configuration, written as a literate Org file.
 Doom will automatically tangle this to =config.el= on startup.
 
+* UIeo#+TITLE: Doom Emacs Configuration
+#+AUTHOR: Marcin
+#+PROPERTY: header-args:emacs-lisp :tangle yes :results silent
+
+* Introduction
+
+This is my personal Doom Emacs configuration, written as a literate Org file.
+Doom will automatically tangle this to =config.el= on startup.
+
 * UI
-** Theme
+** THEME
 
 Using the Tomorrow Night theme from Doom's collection.
 
@@ -18,10 +27,20 @@ Using the Tomorrow Night theme from Doom's collection.
 
 ** Font
 
-Using Maple Mono NF (Nerd Font) for good Unicode coverage.
+Using CommitMono with size based on display: 15 for built-in, 16 for external.
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Maple Mono NF" :size 14))
+(defun mq/get-font-size ()
+  "Return font size based on display: 15 for built-in, 16 for external."
+  (let ((monitors (display-monitor-attributes-list)))
+    (if (and monitors
+             (string-match-p "built-in\\|Color LCD"
+                             (or (cdr (assq 'name (car monitors))) "")))
+        15
+      16)))
+
+(setq doom-font (font-spec :family "CommitMono" :size (mq/get-font-size)))
+(setq doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
 #+end_src
 
 ** Window
@@ -80,13 +99,19 @@ Archive to a datetree structure.
 
 ** Org Google Calendar
 
+
 Sync with Google Calendar. Credentials stored in authinfo.
 
 #+begin_src emacs-lisp
+(setq epg-user-id "marcin.kuder@gmail.com")
+(setq epg-pinentry-mode 'loopback)
+
 (require 'auth-source)
 (setq org-gcal-client-id ""
-      org-gcal-client-secret (funcall (plist-get (car (auth-source-search :host "calendar.google.com")) :secret))
-      org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
+      ;; org-gcal-client-secret (funcall (plist-get (car (auth-source-search :host "calendar.google.com")) :secret))
+
+      org-gcal-client-secret ""
+org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 (require 'org-gcal)
 #+end_src
 
@@ -235,7 +260,7 @@ Open current file/project in Neovim via Ghostty terminal.
           (shell-command full-command)
           (select-window (minibuffer-selected-window)))
       (user-error "Shell script not found. Expected: %s. Did you save it and run 'chmod +x'?" script-path))))
-#+end_src
+#+END_SRC
 
 ** Exec Path
 
@@ -255,102 +280,115 @@ Global leader keybindings.
 (map! :leader :desc "Comment line" "-" #'comment-line)
 #+end_src
 
-* Meow Modal Editing
+* Helix
+#+begin_src emacs-lisp
+;;(use-package! helix
+;;  :config
+;;  (helix-mode))
+#+end_src
 
+* Hel
+#+begin_src emacs-lisp
+;; (use-package! hel
+;; :config
+;;      (hel-mode))
+
+#+end_src
+
+* Meow Modal Editing
 Meow is a modal editing system, an alternative to Evil mode.
 
 ** Utility Functions
 
 #+begin_src emacs-lisp
-(defun meow-word ()
-  "Expand word/symbol under cursor."
-  (interactive)
-  (if (and (use-region-p)
-           (equal (car (region-bounds))
-                  (bounds-of-thing-at-point 'word)))
-      (meow-mark-symbol 1)
-    (progn
-      (when (and (mark)
-                 (equal (car (region-bounds))
-                        (bounds-of-thing-at-point 'symbol)))
-        (meow-pop-selection))
-      (meow-mark-word 1))))
+;; (defun meow-word ()
+;;   "Expand word/symbol under cursor."
+;;   (interactive)
+;;   (if (and (use-region-p)
+;;            (equal (car (region-bounds));;                   (bounds-of-thing-at-point 'word)))
+;;       (meow-mark-symbol 1)
+;;     (progn
+;;       (when (and (mark)
+;;                  (equal (car (region-bounds))
+;;                         (bounds-of-thing-at-point 'symbol)))
+;;         (meow-pop-selection))
+;;       (meow-mark-word 1))))
 
-(defun meow-kill-line ()
-  "Kill till the end of line."
-  (interactive)
-  (let ((select-enable-clipboard meow-use-clipboard))
-    (kill-line)))
+;; (defun meow-kill-line ()
+;;   "Kill till the end of line."
+;;   (interactive)
+;;   (let ((select-enable-clipboard meow-use-clipboard))
+;;     (kill-line)))
 
-(defun meow-change-line ()
-  "Kill till end of line and switch to INSERT state."
-  (interactive)
-  (meow--cancel-selection)
-  (meow-end-of-thing
-   (car (rassoc 'line meow-char-thing-table)))
-  (meow-change))
+;; (defun meow-change-line ()
+;;   "Kill till end of line and switch to INSERT state."
+;;   (interactive)
+;;   (meow--cancel-selection)
+;;   (meow-end-of-thing
+;;    (car (rassoc 'line meow-char-thing-table)))
+;;   (meow-change))
 
-(defun meow-save-clipboard ()
-  "Copy in clipboard."
-  (interactive)
-  (let ((meow-use-clipboard t))
-    (meow-save)))
+;; (defun meow-save-clipboard ()
+;;   "Copy in clipboard."
+;;   (interactive)
+;;   (let ((meow-use-clipboard t))
+;;     (meow-save)))
 
-(defvar meow--trim-yank nil)
+;; (defvar meow--trim-yank nil)
 
-(defun meow-insert-for-yank-advice (orig-fn str)
-  "Advice for `insert-for-yank' function to correctly insert lines."
-  (when meow--trim-yank
-    (setq str (string-trim-right str "\n")))
-  (if (and (not (eq (point) (+ 1 (line-end-position 0))))
-           (string-match-p "^.+\n$" str))
-      (save-excursion
-        (beginning-of-line)
-        (funcall orig-fn str))
-    (funcall orig-fn str)))
+;; (defun meow-insert-for-yank-advice (orig-fn str)
+;;   "Advice for `insert-for-yank' function to correctly insert lines."
+;;   (when meow--trim-yank
+;;     (setq str (string-trim-right str "\n")))
+;;   (if (and (not (eq (point) (+ 1 (line-end-position 0))))
+;;            (string-match-p "^.+\n$" str))
+;;       (save-excursion
+;;         (beginning-of-line)
+;;         (funcall orig-fn str))
+;;     (funcall orig-fn str)))
 
-(defun meow-yank-dwim ()
-  "Smart yank."
-  (interactive)
-  (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
-  (if (use-region-p)
-      (let ((meow--trim-yank t))
-        (delete-region (region-beginning) (region-end))
-        (meow-yank))
-    (meow-yank))
-  (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
+;; (defun meow-yank-dwim ()
+;;   "Smart yank."
+;;   (interactive)
+;;   (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
+;;   (if (use-region-p)
+;;       (let ((meow--trim-yank t))
+;;         (delete-region (region-beginning) (region-end))
+;;         (meow-yank))
+;;     (meow-yank))
+;;   (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
 
-(defun meow-yank-pop-dwim ()
-  "Smart yank pop."
-  (interactive)
-  (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
-  (if (use-region-p)
-      (let ((meow--trim-yank t))
-        (delete-region (region-beginning) (region-end))
-        (meow-yank-pop))
-    (meow-yank-pop))
-  (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
+;; (defun meow-yank-pop-dwim ()
+;;   "Smart yank pop."
+;;   (interactive)
+;;   (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
+;;   (if (use-region-p)
+;;       (let ((meow--trim-yank t))
+;;         (delete-region (region-beginning) (region-end))
+;;         (meow-yank-pop))
+;;     (meow-yank-pop))
+;;   (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
 
-(defun meow-smart-reverse ()
-  "Reverse selection or begin negative argument."
-  (interactive)
-  (if (use-region-p)
-      (meow-reverse)
-    (negative-argument nil)))
+;; (defun meow-smart-reverse ()
+;;   "Reverse selection or begin negative argument."
+;;   (interactive)
+;;   (if (use-region-p)
+;;       (meow-reverse)
+;;     (negative-argument nil)))
 
-(defun meow-kmacro ()
-  "Toggle recording of kmacro."
-  (interactive)
-  (if defining-kbd-macro
-      (meow-end-kmacro)
-    (meow-start-kmacro)))
+;; (defun meow-kmacro ()
+;;   "Toggle recording of kmacro."
+;;   (interactive)
+;;   (if defining-kbd-macro
+;;       (meow-end-kmacro)
+;;     (meow-start-kmacro)))
 
-(defun meow-eldoc ()
-  "Toggle the display of the eldoc window."
-  (interactive)
-  (if (get-buffer-window eldoc--doc-buffer)
-      (delete-window (get-buffer-window eldoc--doc-buffer))
-    (eldoc-doc-buffer t)))
+;; (defun meow-eldoc ()
+;;   "Toggle the display of the eldoc window."
+;;   (interactive)
+;;   (if (get-buffer-window eldoc--doc-buffer)
+;;       (delete-window (get-buffer-window eldoc--doc-buffer))
+;;     (eldoc-doc-buffer t)))
 #+end_src
 
 ** Thing Table
@@ -358,19 +396,19 @@ Meow is a modal editing system, an alternative to Evil mode.
 Custom thing definitions for meow selection.
 
 #+begin_src emacs-lisp
-(meow-thing-register 'angle
-                     '(pair ("<") (">"))
-                     '(pair ("<") (">")))
+;; (meow-thing-register 'angle
+                     ;; '(pair ("<") (">"))
+                     ;; '(pair ("<") (">")))
 
-(setq meow-char-thing-table
-      '((?r . round)
-        (?s . square)
-        (?c . curly)
-        (?a . angle)
-        (?g . string)
-        (?p . paragraph)
-        (?l . line)
-        (?b . buffer)))
+;; (setq meow-char-thing-table
+      ;; '((?r . round)
+        ;; (?s . square)
+        ;; (?c . curly)
+        ;; (?a . angle)
+        ;; (?g . string)
+        ;; (?p . paragraph)
+        ;; (?l . line)
+        ;; (?b . buffer)))
 #+end_src
 
 ** Key Mappings
@@ -378,98 +416,98 @@ Custom thing definitions for meow selection.
 Custom QWERTY-based layout with home row navigation (h/a/e/i instead of h/j/k/l).
 
 #+begin_src emacs-lisp
-(defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-define-key
-   '("a" . meow-next)
-   '("e" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("^" . negative-argument)
-   '("b" . meow-join)
-   '(";" . meow-reverse)
-   '("k" . meow-inner-of-thing)
-   '("K" . meow-bounds-of-thing)
-   '("y" . meow-beginning-of-thing)
-   '("," . meow-end-of-thing)
-   '("s" . meow-append)
-   '("S" . meow-open-below)
-   '("'" . meow-back-word)
-   '("\"" . meow-back-symbol)
-   '("c" . meow-change)
-   '("x" . meow-delete)
-   '("X" . meow-backward-delete)
-   '("/" . meow-next-word)
-   '("?" . meow-next-symbol)
-   '("f" . meow-find)
-   '("F" . meow-pop-to-mark)
-   '("<" . meow-unpop-to-mark)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("n" . meow-insert)
-   '("N" . meow-open-above)
-   '("a" . meow-next)
-   '("A" . meow-next-expand)
-   '("e" . meow-prev)
-   '("E" . meow-prev-expand)
-   '("i" . meow-right)
-   '("I" . meow-right-expand)
-   '("j" . repeat)
-   '("z" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("w" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("R" . meow-replace)
-   '("d" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . undo-redo)
-   '("v" . meow-visit)
-   '("." . meow-mark-word)
-   '(">" . meow-mark-symbol)
-   '("l" . meow-line)
-   '("L" . meow-goto-line)
-   '("m" . meow-save)
-   '("Z" . meow-pop-selection)
-   '("{" . backward-paragraph)
-   '("}" . forward-paragraph)
-   '(":" . execute-extended-command)
-   '("$" . save-buffer)
-   '("_" . avy-goto-char-timer)
-   '("-" . switch-to-buffer)
-   '("#" . comment-line)
-   '("=" . +lookup/references)
-   '("*" . magit)
-   '("<escape>" . ignore)))
+;; (defun meow-setup ()
+;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+;;   (meow-motion-define-key
+;;    '("a" . meow-next)
+;;    '("e" . meow-prev)
+;;    '("<escape>" . ignore))
+;;   (meow-leader-define-key
+;;    '("1" . meow-digit-argument)
+;;    '("2" . meow-digit-argument)
+;;    '("3" . meow-digit-argument)
+;;    '("4" . meow-digit-argument)
+;;    '("5" . meow-digit-argument)
+;;    '("6" . meow-digit-argument)
+;;    '("7" . meow-digit-argument)
+;;    '("8" . meow-digit-argument)
+;;    '("9" . meow-digit-argument)
+;;    '("0" . meow-digit-argument)
+;;    '("/" . meow-keypad-describe-key)
+;;    '("?" . meow-cheatsheet))
+;;   (meow-normal-define-key
+;;    '("0" . meow-expand-0)
+;;    '("9" . meow-expand-9)
+;;    '("8" . meow-expand-8)
+;;    '("7" . meow-expand-7)
+;;    '("6" . meow-expand-6)
+;;    '("5" . meow-expand-5)
+;;    '("4" . meow-expand-4)
+;;    '("3" . meow-expand-3)
+;;    '("2" . meow-expand-2)
+;;    '("1" . meow-expand-1)
+;;    '("^" . negative-argument)
+;;    '("b" . meow-join)
+;;    '(";" . meow-reverse)
+;;    '("k" . meow-inner-of-thing)
+;;    '("K" . meow-bounds-of-thing)
+;;    '("y" . meow-beginning-of-thing)
+;;    '("," . meow-end-of-thing)
+;;    '("s" . meow-append)
+;;    '("S" . meow-open-below)
+;;    '("'" . meow-back-word)
+;;    '("\"" . meow-back-symbol)
+;;    '("c" . meow-change)
+;;    '("x" . meow-delete)
+;;    '("X" . meow-backward-delete)
+;;    '("/" . meow-next-word)
+;;    '("?" . meow-next-symbol)
+;;    '("f" . meow-find)
+;;    '("F" . meow-pop-to-mark)
+;;    '("<" . meow-unpop-to-mark)
+;;    '("g" . meow-cancel-selection)
+;;    '("G" . meow-grab)
+;;    '("h" . meow-left)
+;;    '("H" . meow-left-expand)
+;;    '("n" . meow-insert)
+;;    '("N" . meow-open-above)
+;;    '("a" . meow-next)
+;;    '("A" . meow-next-expand)
+;;    '("e" . meow-prev)
+;;    '("E" . meow-prev-expand)
+;;    '("i" . meow-right)
+;;    '("I" . meow-right-expand)
+;;    '("j" . repeat)
+;;    '("z" . meow-search)
+;;    '("o" . meow-block)
+;;    '("O" . meow-to-block)
+;;    '("w" . meow-yank)
+;;    '("q" . meow-quit)
+;;    '("Q" . meow-goto-line)
+;;    '("R" . meow-replace)
+;;    '("d" . meow-kill)
+;;    '("t" . meow-till)
+;;    '("u" . meow-undo)
+;;    '("U" . undo-redo)
+;;    '("v" . meow-visit)
+;;    '("." . meow-mark-word)
+;;    '(">" . meow-mark-symbol)
+;;    '("l" . meow-line)
+;;    '("L" . meow-goto-line)
+;;    '("m" . meow-save)
+;;    '("Z" . meow-pop-selection)
+;;    '("{" . backward-paragraph)
+;;    '("}" . forward-paragraph)
+;;    '(":" . execute-extended-command)
+;;    '("$" . save-buffer)
+;;    '("_" . avy-goto-char-timer)
+;;    '("-" . switch-to-buffer)
+;;    '("#" . comment-line)
+;;    '("=" . +lookup/references)
+;;    '("*" . magit)
+;;    '("<escape>" . ignore)))
 
-(meow-setup)
+;; (meow-setup)
 #+end_src
 
 * Faces and Theming
@@ -494,12 +532,12 @@ Customize syntax highlighting colors using Doom's theme colors.
 Subtle position highlight numbers.
 
 #+begin_src emacs-lisp
-(after! meow
-  (custom-set-faces!
-    `(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-    `(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-    `(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
-    `(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+;;(after! meow
+  ;;(custom-set-faces!
+    ;;`(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    ;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    ;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
+    ;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
 #+end_src
 
 * Claude Code IDE
@@ -543,7 +581,7 @@ Use main font for Unicode ranges to prevent font fallback flicker.
 #+begin_src emacs-lisp
 (defun my/setup-claude-fontset ()
   "Set up fonts for Claude Code Unicode characters to prevent flicker."
-  (let ((font "Maple Mono NF"))
+  (let ((font "Symbols Nerd Font Mono"))
     (set-fontset-font t '(#x23FA . #x23FA) font)
     (set-fontset-font t '(#x2700 . #x27BF) font)
     (set-fontset-font t '(#x2800 . #x28FF) font)

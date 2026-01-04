@@ -78,4 +78,10 @@
   :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 ;; (package! web-server)
 
-;;;
+;;; heli
+;;; x mode
+;;(package! helix)
+
+;;; hel
+;;(package! pcre2el)
+;;(package! hel :recipe (:host github :repo "anuvyklack/hel"))
