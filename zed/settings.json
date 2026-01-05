@@ -1,0 +1,87 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "agent_ui_font_size": 17.0,
+  "cursor_blink": false,
+  "helix_mode": false,
+  "base_keymap": "VSCode",
+  "git_panel": {
+    "dock": "right"
+  },
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
+  "project_panel": {
+    "dock": "right"
+  },
+  "agent": {
+    "default_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-4o"
+    },
+  },
+  "vim_mode": true,
+  "ui_font_size": 16.0,
+  "buffer_font_family": "CommitMono",
+  "buffer_font_weight": 400,
+  "buffer_font_size": 15.0,
+  "theme": "Tomorrow Night",
+  "autosave": {
+    "after_delay": { "milliseconds": 600 }
+  },
+  "lsp": {
+    "deno": {
+      "settings": {
+        "deno": {
+          "enable": true
+        }
+      }
+    }
+  },
+  "languages": {
+    "Swift": {
+      "enable_language_server": true,
+      "language_servers": ["sourcekit-lsp"],
+      "formatter": "language_server",
+      "format_on_save": "on",
+      "tab_size": 4
+    },
+    "Dart": {
+      // not working
+      "enable_language_server": true,
+      "language_servers": ["dart"],
+      "formatter": "language_server",
+      "format_on_save": "on"
+    },
+    "TypeScript": {
+      "language_servers": [
+        "deno",
+        "!typescript-language-server",
+        "!vtsls",
+        "!eslint"
+      ],
+      "formatter": "language_server"
+    },
+    "TSX": {
+      "language_servers": [
+        "deno",
+        "!typescript-language-server",
+        "!vtsls",
+        "!eslint"
+      ],
+      "formatter": "language_server"
+    }
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": false
+    }
+  },
+  "relative_line_numbers": "enabled"
+}
