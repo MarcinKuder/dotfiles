@@ -11,6 +11,7 @@
 
 # Ignore generated files
 doom/config.el
+doom/CLAUDE.md
 zed/conversations/
 zed/prompts/
 zed/settings_backup.json
