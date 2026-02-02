@@ -1,4 +1,7 @@
-(setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-tomorrow-night)
+;; (setq doom-theme 'doom-feather-dark)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
 
 (defun mq/get-font-size ()
   "Return font size based on display: 15 for built-in, 16 for external."
@@ -7,7 +10,7 @@
              (string-match-p "built-in\\|Color LCD"
                              (or (cdr (assq 'name (car monitors))) "")))
         15
-      16)))
+      15)))
 
 (setq doom-font (font-spec :family "CommitMono" :size (mq/get-font-size)))
 (setq doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
@@ -16,7 +19,7 @@
 
 (setq confirm-kill-emacs nil)
 
-(setq org-directory "~/org")
+(setq org-directory "~/Documents/org")
 
 (after! org
   (setq org-agenda-start-with-log-mode t)
@@ -44,6 +47,18 @@
 org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 (require 'org-gcal)
 
+(after! org-journal
+  (setq org-journal-dir (expand-file-name "journal/" org-directory))
+  (setq org-journal-date-prefix "* ")
+  (setq org-journal-date-format "%A, %d %B %Y")
+  (setq org-journal-time-prefix "** ")
+  (setq org-journal-time-format "%H:%M ")
+  (setq org-journal-file-type 'monthly))
+
+(map! :leader
+        :prefix "n"
+        :desc "Journal entry for date" "j d" #'org-journal-new-date-entry)
+
 (defun mq/org-reformat-buffer ()
   (interactive)
   (when (y-or-n-p "Really format current buffer? ")
@@ -52,30 +67,40 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
       (insert document)
       (goto-char (point-min)))))
 
+;; Clear SPC d binding before denote uses it (must run before denote's :init)
+(map! :leader "d" nil)
+
 (use-package! denote
+  
   :hook
   ((text-mode . denote-fontify-links-mode-maybe)
    (dired-mode . denote-dired-mode))
 
-  :bind
-  (("C-c n n" . denote)
-   ("C-c n d" . denote-dired)
-   ("C-c n g" . denote-grep)
-   ("C-c n l" . denote-link)
-   ("C-c n L" . denote-add-links)
-   ("C-c n b" . denote-backlinks)
-   ("C-c n q c" . denote-query-contents-link)
-   ("C-c n q f" . denote-query-filenames-link)
-   ("C-c n r" . denote-rename-file)
-   ("C-c n R" . denote-rename-file-using-front-matter)
-   :map dired-mode-map
-   ("C-c C-d C-i" . denote-dired-link-marked-notes)
-   ("C-c C-d C-r" . denote-dired-rename-files)
-   ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
-   ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
+  :bind (:map dired-mode-map
+         ("C-c C-d C-i" . denote-dired-link-marked-notes)
+         ("C-c C-d C-r" . denote-dired-rename-files)
+         ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
+         ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
+
+  :init
+  (map! :leader
+        :prefix ("d" . "denote")
+        "n" #'denote
+        "d" #'denote-dired
+        "o" #'denote-open-or-create
+        "g" #'denote-grep
+        "l" #'denote-link
+        "L" #'denote-add-links
+        "b" #'denote-backlinks
+        "r" #'denote-rename-file
+        "R" #'denote-rename-file-using-front-matter
+        "s" #'+denote/search-in-all-notes 
+        (:prefix ("q" . "query")
+         "c" #'denote-query-contents-link
+         "f" #'denote-query-filenames-link))
 
   :config
-  (setq denote-directory (expand-file-name "~/Documents/notes/"))
+  (setq denote-directory (expand-file-name "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/notes/"))
   (setq denote-save-buffers nil)
   (setq denote-known-keywords '("emacs" "kb"))
   (setq denote-infer-keywords t)
@@ -93,35 +118,96 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 
   (denote-rename-buffer-mode 1))
 
+(after! denote
+  (add-hook 'dired-mode-hook #'denote-dired-mode)
+  
+  ;; Custom faces for denote filename components
+  (defface denote-faces-date
+    '((t :inherit font-lock-constant-face))
+    "Face for the date component in denote filenames.")
+  
+  (defface denote-faces-title
+    '((t :inherit font-lock-function-name-face))
+    "Face for the title component in denote filenames.")
+  
+  (defface denote-faces-keywords
+    '((t :inherit font-lock-keyword-face))
+    "Face for the keywords component in denote filenames.")
+  
+  (defface denote-faces-signature
+    '((t :inherit font-lock-type-face))
+    "Face for the signature component in denote filenames.")
+  
+  (defface denote-faces-delimiter
+    '((t :foreground "gray50"))
+    "Face for delimiters in denote filenames.")
+  
+  ;; Font-lock rules for dired
+ (font-lock-add-keywords
+   'dired-mode
+   '(("\\([0-9]\\{8\\}T[0-9]\\{6\\}\\)" 1 'denote-faces-date)
+     ("\\(--\\)\\([^_]+\\)" (1 'denote-faces-delimiter) (2 'denote-faces-title))
+     ("\\(__\\)\\([^.=]+\\)" (1 'denote-faces-delimiter) (2 'denote-faces-keywords))
+     ("\\(==\\)\\([^_]+\\)" (1 'denote-faces-delimiter) (2 'denote-faces-signature))
+     ;; Single underscores (not part of __)
+     ("[^_]\\(_\\)[^_]" 1 'denote-faces-delimiter))))
+
+(after! dape
+  (map! :leader
+        :prefix ("D" . "debug")
+        "d" #'dape
+        "p" #'dape-pause
+        "c" #'dape-continue
+        "n" #'dape-next
+        "s" #'dape-step-in
+        "o" #'dape-step-out
+        "r" #'dape-restart
+        "i" #'dape-info
+        "R" #'dape-repl
+        "m" #'dape-read-memory
+        "l" #'dape-breakpoint-log
+        "e" #'dape-breakpoint-expression
+        "b" #'dape-breakpoint-toggle
+        "B" #'dape-breakpoint-remove-all
+        "t" #'dape-select-thread
+        "S" #'dape-select-stack
+        "w" #'dape-watch-dwim
+        "D" #'dape-disconnect-quit
+        "q" #'dape-quit))
+
 (use-package! odin-ts-mode
   :mode "\\.odin\\'")
 
 (add-hook 'odin-ts-mode-hook #'lsp-deferred)
+
+;; Custom colors for Odin mode to avoid red
+(defun my/odin-mode-colors ()
+  "Set custom colors for Odin mode."
+  (face-remap-add-relative 'font-lock-keyword-face :foreground (doom-color 'yellow))
+  (face-remap-add-relative 'font-lock-type-face :foreground (doom-color 'cyan))
+  (face-remap-add-relative 'font-lock-constant-face :foreground (doom-color 'magenta)))
+
+(add-hook 'odin-ts-mode-hook #'my/odin-mode-colors)
 
 (setq gdscript-godot-executable "/Applications/Godot.app/Contents/MacOS/Godot")
 
 (setq lsp-zig-zls-executable "/Users/marcin/proj/zig/zls/zig-out/bin/zls")
 (setq lsp-zig-zig-exe-path "/opt/homebrew/bin/zig")
 
-(use-package! copilot
-  :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-completion-map
-              ("<tab>" . 'copilot-accept-completion)
-              ("TAB" . 'copilot-accept-completion)
-              ("C-TAB" . 'copilot-accept-completion-by-word)
-              ("C-<tab>" . 'copilot-accept-completion-by-word)
-              ("C-n" . 'copilot-next-completion)
-              ("C-p" . 'copilot-previous-completion))
-
-  :config
-  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
-  (add-to-list 'copilot-indentation-alist '(org-mode 2))
-  (add-to-list 'copilot-indentation-alist '(text-mode 2))
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
-
 (setq shell-file-name (executable-find "bash"))
 (setq-default vterm-shell "/opt/homebrew/bin/fish")
 (setq-default explicit-shell-file-name "/opt/homebrew/bin/fish")
+
+;; (setq find-file-visit-truename t)
+
+(defun my/disable-trash-for-cloud-storage (orig-fun &rest args)
+  "Disable trash for files in CloudStorage/SynologyDrive."
+  (let ((delete-by-moving-to-trash
+         (and delete-by-moving-to-trash
+              (not (string-match-p "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/" (car args))))))
+    (apply orig-fun args)))
+
+(advice-add 'delete-file :around #'my/disable-trash-for-cloud-storage)
 
 (defun mq/ghostty-nvim-current-dir ()
   "Opens a new Ghostty terminal in the current file path, or the project directory"
@@ -154,9 +240,9 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 ;;  :config
 ;;  (helix-mode))
 
-(use-package! hel
-:config
-     (hel-mode))
+;; (use-package! hel
+;; :config
+;;      (hel-mode))
 
 ;; (defun meow-word ()
 ;;   "Expand word/symbol under cursor."
@@ -355,14 +441,15 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 ;; (meow-setup)
 
 (custom-set-faces!
-  `(font-lock-function-name-face :foreground ,(doom-color 'aqua) :weight bold)
+  ;;   `(font-lock-function-name-face :foreground ,(doom-color 'aqua) :weight bold)
   `(font-lock-function-call-face :foreground ,(doom-color 'aqua))
-  `(font-lock-keyword-face :foreground ,(doom-color 'orange) :weight bold)
-  `(font-lock-type-face :foreground ,(doom-color 'green) :weight bold)
-  `(font-lock-variable-name-face :foreground ,(doom-color 'blue))
-  `(font-lock-constant-face :foreground ,(doom-color 'purple) :weight bold)
-  `(font-lock-comment-face :foreground ,(doom-color 'grey) :slant italic)
-  `(font-lock-string-face :foreground ,(doom-color 'green)))
+  ;;   `(font-lock-keyword-face :foreground ,(doom-color 'orange) :weight bold)
+  ;;   `(font-lock-type-face :foreground ,(doom-color 'green) :weight bold)
+  ;;   `(font-lock-variable-name-face :foreground ,(doom-color 'blue))
+  ;;   `(font-lock-constant-face :foreground ,(doom-color 'purple) :weight bold)
+  ;;   `(font-lock-comment-face :foreground ,(doom-color 'grey) :slant italic)
+  ;;   `(font-lock-string-face :foreground ,(doom-color 'green))
+  )
 
 ;;(after! meow
   ;;(custom-set-faces!
@@ -370,6 +457,22 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
     ;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
     ;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
     ;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)
+              ("C-n" . 'copilot-next-completion)
+              ("C-p" . 'copilot-previous-completion))
+
+  :config
+  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+  (add-to-list 'copilot-indentation-alist '(org-mode 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
 
 (use-package! claude-code-ide
   :init
@@ -411,3 +514,6 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
   (setq vterm-max-scrollback 5000))
 
 (setenv "CLAUDE_CODE_DISABLE_TERMINAL_TITLE" "1")
+
+(use-package! nov
+  :mode ("\\.epub\\'" . nov-mode))

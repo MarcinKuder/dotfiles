@@ -7,23 +7,33 @@
 // custom settings, run `zed: open default settings` from the
 // command palette (cmd-shift-p / ctrl-shift-p)
 {
+  "which_key": {
+    "enabled": true,
+  },
+  "edit_predictions": {
+    "disabled_globs": [],
+  },
+  "terminal": {
+    "font_family": "Maple Mono NF",
+  },
+  "icon_theme": "Colored Zed Icons Theme Dark",
   "agent_ui_font_size": 17.0,
   "cursor_blink": false,
   "helix_mode": false,
   "base_keymap": "VSCode",
   "git_panel": {
-    "dock": "right"
+    "dock": "right",
   },
   "features": {
-    "edit_prediction_provider": "zed"
+    "edit_prediction_provider": "copilot",
   },
   "project_panel": {
-    "dock": "right"
+    "dock": "right",
   },
   "agent": {
     "default_model": {
       "provider": "copilot_chat",
-      "model": "gpt-4o"
+      "model": "gpt-4o",
     },
   },
   "vim_mode": true,
@@ -31,18 +41,20 @@
   "buffer_font_family": "CommitMono",
   "buffer_font_weight": 400,
   "buffer_font_size": 15.0,
-  "theme": "Tomorrow Night",
-  "autosave": {
-    "after_delay": { "milliseconds": 600 }
+  "theme": "Catppuccin Macchiato",
+  "experimental.theme_overrides": {
+    "border": "#111111",
+    "border.variant": "#333333",
   },
+  "autosave": "on_focus_change",
   "lsp": {
     "deno": {
       "settings": {
         "deno": {
-          "enable": true
-        }
-      }
-    }
+          "enable": true,
+        },
+      },
+    },
   },
   "languages": {
     "Swift": {
@@ -50,38 +62,38 @@
       "language_servers": ["sourcekit-lsp"],
       "formatter": "language_server",
       "format_on_save": "on",
-      "tab_size": 4
+      "tab_size": 4,
     },
     "Dart": {
       // not working
       "enable_language_server": true,
       "language_servers": ["dart"],
       "formatter": "language_server",
-      "format_on_save": "on"
+      "format_on_save": "on",
     },
     "TypeScript": {
       "language_servers": [
         "deno",
         "!typescript-language-server",
         "!vtsls",
-        "!eslint"
+        "!eslint",
       ],
-      "formatter": "language_server"
+      "formatter": "language_server",
     },
     "TSX": {
       "language_servers": [
         "deno",
         "!typescript-language-server",
         "!vtsls",
-        "!eslint"
+        "!eslint",
       ],
-      "formatter": "language_server"
-    }
+      "formatter": "language_server",
+    },
   },
   "git": {
     "inline_blame": {
-      "enabled": false
-    }
+      "enabled": false,
+    },
   },
-  "relative_line_numbers": "enabled"
+  "relative_line_numbers": "enabled",
 }
