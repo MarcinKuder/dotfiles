@@ -7,4 +7,9 @@
 !/borders/
 !/sketchybar/
 !/doom/
+!/zed/
+
+# Ignore generated files
 doom/config.el
+zed/conversations/
+zed/prompts/
