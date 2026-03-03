@@ -1,7 +1,9 @@
 ;; (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-feather-dark)
-(setq doom-theme 'catppuccin)
-(setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
+;; (setq doom-theme 'catppuccin)
+;; (setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
+
+(setq doom-theme 'doom-matccha)
 
 (defun mq/get-font-size ()
   "Return font size based on display: 15 for built-in, 16 for external."
@@ -12,7 +14,7 @@
         15
       15)))
 
-(setq doom-font (font-spec :family "CommitMono" :size (mq/get-font-size)))
+(setq doom-font (font-spec :family "Victor Mono" :size (mq/get-font-size)))
 (setq doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
 
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
@@ -44,7 +46,7 @@
       ;; org-gcal-client-secret (funcall (plist-get (car (auth-source-search :host "calendar.google.com")) :secret))
 
       org-gcal-client-secret ""
-org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
+      org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 (require 'org-gcal)
 
 (after! org-journal
@@ -56,8 +58,8 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
   (setq org-journal-file-type 'monthly))
 
 (map! :leader
-        :prefix "n"
-        :desc "Journal entry for date" "j d" #'org-journal-new-date-entry)
+      :prefix "n"
+      :desc "Journal entry for date" "j d" #'org-journal-new-date-entry)
 
 (defun mq/org-reformat-buffer ()
   (interactive)
@@ -77,10 +79,10 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
    (dired-mode . denote-dired-mode))
 
   :bind (:map dired-mode-map
-         ("C-c C-d C-i" . denote-dired-link-marked-notes)
-         ("C-c C-d C-r" . denote-dired-rename-files)
-         ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
-         ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
+              ("C-c C-d C-i" . denote-dired-link-marked-notes)
+              ("C-c C-d C-r" . denote-dired-rename-files)
+              ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
+              ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
 
   :init
   (map! :leader
@@ -96,8 +98,8 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
         "R" #'denote-rename-file-using-front-matter
         "s" #'+denote/search-in-all-notes 
         (:prefix ("q" . "query")
-         "c" #'denote-query-contents-link
-         "f" #'denote-query-filenames-link))
+                 "c" #'denote-query-contents-link
+                 "f" #'denote-query-filenames-link))
 
   :config
   (setq denote-directory (expand-file-name "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/notes/"))
@@ -142,15 +144,21 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
     '((t :foreground "gray50"))
     "Face for delimiters in denote filenames.")
   
-  ;; Font-lock rules for dired
- (font-lock-add-keywords
+  ;; Font-lock rules for dired (anchored to denote date prefix to avoid
+  ;; false matches on non-denote files like phone_refile.org)
+  (font-lock-add-keywords
    'dired-mode
-   '(("\\([0-9]\\{8\\}T[0-9]\\{6\\}\\)" 1 'denote-faces-date)
-     ("\\(--\\)\\([^_]+\\)" (1 'denote-faces-delimiter) (2 'denote-faces-title))
-     ("\\(__\\)\\([^.=]+\\)" (1 'denote-faces-delimiter) (2 'denote-faces-keywords))
-     ("\\(==\\)\\([^_]+\\)" (1 'denote-faces-delimiter) (2 'denote-faces-signature))
-     ;; Single underscores (not part of __)
-     ("[^_]\\(_\\)[^_]" 1 'denote-faces-delimiter))))
+   '(;; Date component
+     ("\\([0-9]\\{8\\}T[0-9]\\{6\\}\\)" 1 'denote-faces-date)
+     ;; Title: DATE--TITLE (stop before __ == or extension)
+     ("[0-9]\\{8\\}T[0-9]\\{6\\}\\(--\\)\\([^_.=\n]+\\)"
+      (1 'denote-faces-delimiter) (2 'denote-faces-title))
+     ;; Keywords: DATE....__KEYWORDS (only in denote filenames)
+     ("[0-9]\\{8\\}T[0-9]\\{6\\}[^ \t\n]*\\(__\\)\\([^.=\n]+\\)"
+      (1 'denote-faces-delimiter) (2 'denote-faces-keywords))
+     ;; Signature: DATE....==SIGNATURE (only in denote filenames)
+     ("[0-9]\\{8\\}T[0-9]\\{6\\}[^ \t\n]*\\(==\\)\\([^_.\n]+\\)"
+      (1 'denote-faces-delimiter) (2 'denote-faces-signature)))))
 
 (after! dape
   (map! :leader
@@ -334,18 +342,18 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 ;;     (eldoc-doc-buffer t)))
 
 ;; (meow-thing-register 'angle
-                     ;; '(pair ("<") (">"))
-                     ;; '(pair ("<") (">")))
+;; '(pair ("<") (">"))
+;; '(pair ("<") (">")))
 
 ;; (setq meow-char-thing-table
-      ;; '((?r . round)
-        ;; (?s . square)
-        ;; (?c . curly)
-        ;; (?a . angle)
-        ;; (?g . string)
-        ;; (?p . paragraph)
-        ;; (?l . line)
-        ;; (?b . buffer)))
+;; '((?r . round)
+;; (?s . square)
+;; (?c . curly)
+;; (?a . angle)
+;; (?g . string)
+;; (?p . paragraph)
+;; (?l . line)
+;; (?b . buffer)))
 
 ;; (defun meow-setup ()
 ;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -442,7 +450,7 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 
 (custom-set-faces!
   ;;   `(font-lock-function-name-face :foreground ,(doom-color 'aqua) :weight bold)
-  `(font-lock-function-call-face :foreground ,(doom-color 'aqua))
+  `(font-lock-function-call-face :foreground ,(doom-color 'teal))
   ;;   `(font-lock-keyword-face :foreground ,(doom-color 'orange) :weight bold)
   ;;   `(font-lock-type-face :foreground ,(doom-color 'green) :weight bold)
   ;;   `(font-lock-variable-name-face :foreground ,(doom-color 'blue))
@@ -452,11 +460,11 @@ org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
   )
 
 ;;(after! meow
-  ;;(custom-set-faces!
-    ;;`(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-    ;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-    ;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
-    ;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+;;(custom-set-faces!
+;;`(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
+;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
 
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
