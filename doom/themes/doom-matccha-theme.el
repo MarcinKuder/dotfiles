@@ -270,10 +270,10 @@
    (org-block            :background base2)
    (org-block-begin-line :foreground base7 :background base2 :slant 'italic)
    (org-block-end-line   :foreground base7 :background base2 :slant 'italic)
-   (org-level-1          :foreground green  :bold t   :height 1.25)
-   (org-level-2          :foreground teal   :bold t   :height 1.15)
-   (org-level-3          :foreground yellow :bold t   :height 1.08)
-   (org-level-4          :foreground cyan   :bold nil :height 1.0)
+   (org-level-1          :foreground green  :bold t)
+   (org-level-2          :foreground orange :bold t)
+   (org-level-3          :foreground yellow :bold t)
+   (org-level-4          :foreground cyan   :bold nil)
    (org-level-5          :foreground orange :bold nil)
    (org-level-6          :foreground violet :bold nil)
    (org-level-7          :foreground magenta :bold nil)
@@ -305,9 +305,9 @@
    ;; -------------------------------------------------------------------------
    ;; Markdown
    ;; -------------------------------------------------------------------------
-   (markdown-header-face-1   :foreground green  :bold t :height 1.25)
-   (markdown-header-face-2   :foreground teal   :bold t :height 1.15)
-   (markdown-header-face-3   :foreground yellow :bold t :height 1.08)
+   (markdown-header-face-1   :foreground green  :bold t)
+   (markdown-header-face-2   :foreground orange :bold t)
+   (markdown-header-face-3   :foreground yellow :bold t)
    (markdown-header-face-4   :foreground cyan   :bold nil)
    (markdown-code-face       :background base2)
    (markdown-inline-code-face :foreground green)

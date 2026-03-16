@@ -1,9 +1,8 @@
 ;; (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-feather-dark)
-;; (setq doom-theme 'catppuccin)
-;; (setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
-
-(setq doom-theme 'doom-matccha)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
+;; (setq doom-theme 'doom-matccha)
 
 (defun mq/get-font-size ()
   "Return font size based on display: 15 for built-in, 16 for external."
@@ -46,7 +45,7 @@
       ;; org-gcal-client-secret (funcall (plist-get (car (auth-source-search :host "calendar.google.com")) :secret))
 
       org-gcal-client-secret ""
-      org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
+org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
 (require 'org-gcal)
 
 (after! org-journal
@@ -58,8 +57,8 @@
   (setq org-journal-file-type 'monthly))
 
 (map! :leader
-      :prefix "n"
-      :desc "Journal entry for date" "j d" #'org-journal-new-date-entry)
+        :prefix "n"
+        :desc "Journal entry for date" "j d" #'org-journal-new-date-entry)
 
 (defun mq/org-reformat-buffer ()
   (interactive)
@@ -79,10 +78,10 @@
    (dired-mode . denote-dired-mode))
 
   :bind (:map dired-mode-map
-              ("C-c C-d C-i" . denote-dired-link-marked-notes)
-              ("C-c C-d C-r" . denote-dired-rename-files)
-              ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
-              ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
+         ("C-c C-d C-i" . denote-dired-link-marked-notes)
+         ("C-c C-d C-r" . denote-dired-rename-files)
+         ("C-c C-d C-k" . denote-dired-rename-marked-files-with-keywords)
+         ("C-c C-d C-R" . denote-dired-rename-marked-files-using-front-matter))
 
   :init
   (map! :leader
@@ -98,11 +97,11 @@
         "R" #'denote-rename-file-using-front-matter
         "s" #'+denote/search-in-all-notes 
         (:prefix ("q" . "query")
-                 "c" #'denote-query-contents-link
-                 "f" #'denote-query-filenames-link))
+         "c" #'denote-query-contents-link
+         "f" #'denote-query-filenames-link))
 
   :config
-  (setq denote-directory (expand-file-name "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/notes/"))
+  (setq denote-directory (expand-file-name "/Users/marcin/Documents/notes/"))
   (setq denote-save-buffers nil)
   (setq denote-known-keywords '("emacs" "kb"))
   (setq denote-infer-keywords t)
@@ -212,7 +211,7 @@
   "Disable trash for files in CloudStorage/SynologyDrive."
   (let ((delete-by-moving-to-trash
          (and delete-by-moving-to-trash
-              (not (string-match-p "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/" (car args))))))
+              (not (string-match-p "/Users/marcin/Library/CloudStorage/SynologyDrive-" (car args))))))
     (apply orig-fun args)))
 
 (advice-add 'delete-file :around #'my/disable-trash-for-cloud-storage)
@@ -243,6 +242,8 @@
 (map! :leader :desc "Open Dired" "e" #'dired-jump)
 (map! :leader :desc "Open nvim" "o n" 'mq/ghostty-nvim-current-dir)
 (map! :leader :desc "Comment line" "-" #'comment-line)
+(map! :n "]P" #'forward-page
+      :n "[P" #'backward-page)
 
 ;;(use-package! helix
 ;;  :config
@@ -342,18 +343,18 @@
 ;;     (eldoc-doc-buffer t)))
 
 ;; (meow-thing-register 'angle
-;; '(pair ("<") (">"))
-;; '(pair ("<") (">")))
+                     ;; '(pair ("<") (">"))
+                     ;; '(pair ("<") (">")))
 
 ;; (setq meow-char-thing-table
-;; '((?r . round)
-;; (?s . square)
-;; (?c . curly)
-;; (?a . angle)
-;; (?g . string)
-;; (?p . paragraph)
-;; (?l . line)
-;; (?b . buffer)))
+      ;; '((?r . round)
+        ;; (?s . square)
+        ;; (?c . curly)
+        ;; (?a . angle)
+        ;; (?g . string)
+        ;; (?p . paragraph)
+        ;; (?l . line)
+        ;; (?b . buffer)))
 
 ;; (defun meow-setup ()
 ;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -460,11 +461,11 @@
   )
 
 ;;(after! meow
-;;(custom-set-faces!
-;;`(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
-;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+  ;;(custom-set-faces!
+    ;;`(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    ;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    ;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
+    ;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
 
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
@@ -487,7 +488,20 @@
   (setq claude-code-ide-cli-path "/Users/marcin/.local/bin/claude")
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
-  (claude-code-ide-emacs-tools-setup))
+  (claude-code-ide-emacs-tools-setup)
+  (map! :leader
+        (:prefix ("l" . "claude-code")
+         :desc "Menu"             "l" #'claude-code-ide-menu
+         :desc "Start session"    "s" #'claude-code-ide
+         :desc "Resume session"   "r" #'claude-code-ide-resume
+         :desc "Continue last"    "C" #'claude-code-ide-continue
+         :desc "Toggle window"    "t" #'claude-code-ide-toggle
+         :desc "Switch to buffer" "b" #'claude-code-ide-switch-to-buffer
+         :desc "Send prompt"      "p" #'claude-code-ide-send-prompt
+         :desc "@ mention"        "@" #'claude-code-ide-insert-at-mentioned
+         :desc "Stop session"     "q" #'claude-code-ide-stop
+         :desc "List sessions"    "L" #'claude-code-ide-list-sessions
+         :desc "Send escape"      "e" #'claude-code-ide-send-escape)))
 
 (dolist (range '((#x23FA . #x23FA)   ; bullet
                  (#x2700 . #x27BF)   ; Dingbats (spinner chars)
@@ -525,3 +539,30 @@
 
 (use-package! nov
   :mode ("\\.epub\\'" . nov-mode))
+
+(after! logos
+  ;; If you want to use outlines instead of page breaks (the ^L):
+  (setq logos-outlines-are-pages t)
+
+  ;; This is the default value for the outlines:
+  (setq logos-outline-regexp-alist
+        `((emacs-lisp-mode . "^;;;+ ")
+          (org-mode . "^\\*+ +")
+          (markdown-mode . "^\\#+ +")))
+
+  ;; These apply when `logos-focus-mode' is enabled.  Their value is
+  ;; buffer-local.
+  (setq-default logos-hide-cursor nil
+                logos-hide-mode-line t
+                logos-hide-header-line t
+                logos-hide-buffer-boundaries t
+                logos-hide-fringe t
+                logos-variable-pitch nil
+                logos-buffer-read-only nil
+                logos-scroll-lock nil
+                logos-olivetti nil)
+
+  (define-key global-map [remap narrow-to-region] #'logos-narrow-dwim)
+  (define-key global-map [remap forward-page] #'logos-forward-page-dwim)
+  (define-key global-map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key global-map (kbd "<f9>") #'logos-focus-mode))

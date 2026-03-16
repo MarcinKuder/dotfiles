@@ -10,14 +10,14 @@ Doom will automatically tangle this to =config.el= on startup.
 * UI
 ** THEME
 
-Using the Tomorrow Night theme from Doom's collection.
+Using the Catppuccin theme from Doom's collection.
 
 #+begin_src emacs-lisp
 ;; (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-feather-dark)
-;; (setq doom-theme 'catppuccin)
-;; (setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
-(setq doom-theme 'doom-matccha)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
+;; (setq doom-theme 'doom-matccha)
 #+end_src
 
 ** Font
@@ -180,7 +180,7 @@ Denote is a simple note-taking system with a predictable file-naming scheme.
          "f" #'denote-query-filenames-link))
 
   :config
-  (setq denote-directory (expand-file-name "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/notes/"))
+  (setq denote-directory (expand-file-name "/Users/marcin/Documents/notes/"))
   (setq denote-save-buffers nil)
   (setq denote-known-keywords '("emacs" "kb"))
   (setq denote-infer-keywords t)
@@ -321,6 +321,7 @@ but fish for terminal emulators.
 #+end_src
 
 Disable trash specifically for CloudStorage paths, otherwise i am getting error when deleting SynologyDrive files
+Check if this is still needed after pined the synology drive folders
 #+begin_src emacs-lisp
 ;; (setq find-file-visit-truename t)
 
@@ -328,7 +329,7 @@ Disable trash specifically for CloudStorage paths, otherwise i am getting error 
   "Disable trash for files in CloudStorage/SynologyDrive."
   (let ((delete-by-moving-to-trash
          (and delete-by-moving-to-trash
-              (not (string-match-p "/Users/marcin/Library/CloudStorage/SynologyDrive-sync/" (car args))))))
+              (not (string-match-p "/Users/marcin/Library/CloudStorage/SynologyDrive-" (car args))))))
     (apply orig-fun args)))
 
 (advice-add 'delete-file :around #'my/disable-trash-for-cloud-storage)
@@ -378,6 +379,8 @@ Global leader keybindings.
 (map! :leader :desc "Open Dired" "e" #'dired-jump)
 (map! :leader :desc "Open nvim" "o n" 'mq/ghostty-nvim-current-dir)
 (map! :leader :desc "Comment line" "-" #'comment-line)
+(map! :n "]P" #'forward-page
+      :n "[P" #'backward-page)
 #+end_src
 
 * Other modal editing modes (currently disabled)
@@ -675,9 +678,23 @@ Integration with Claude Code CLI.
 (use-package! claude-code-ide
   :init
   (setq claude-code-ide-cli-path "/Users/marcin/.local/bin/claude")
+  (setq claude-code-ide-window-width 120)
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
-  (claude-code-ide-emacs-tools-setup))
+  (claude-code-ide-emacs-tools-setup)
+  (map! :leader
+        (:prefix ("l" . "claude-code")
+         :desc "Menu"             "l" #'claude-code-ide-menu
+         :desc "Start session"    "s" #'claude-code-ide
+         :desc "Resume session"   "r" #'claude-code-ide-resume
+         :desc "Continue last"    "C" #'claude-code-ide-continue
+         :desc "Toggle window"    "t" #'claude-code-ide-toggle
+         :desc "Switch to buffer" "b" #'claude-code-ide-switch-to-buffer
+         :desc "Send prompt"      "p" #'claude-code-ide-send-prompt
+         :desc "@ mention"        "@" #'claude-code-ide-insert-at-mentioned
+         :desc "Stop session"     "q" #'claude-code-ide-stop
+         :desc "List sessions"    "L" #'claude-code-ide-list-sessions
+         :desc "Send escape"      "e" #'claude-code-ide-send-escape)))
 #+end_src
 
 *** Anti-Flicker Settings
@@ -743,3 +760,33 @@ Use main font for Unicode ranges to prevent font fallback flicker.
 (use-package! nov
   :mode ("\\.epub\\'" . nov-mode))
 #+end_src 
+
+* Logos
+#+begin_src emacs-lisp
+(after! logos
+  ;; If you want to use outlines instead of page breaks (the ^L):
+  (setq logos-outlines-are-pages t)
+
+  ;; This is the default value for the outlines:
+  (setq logos-outline-regexp-alist
+        `((emacs-lisp-mode . "^;;;+ ")
+          (org-mode . "^\\*+ +")
+          (markdown-mode . "^\\#+ +")))
+
+  ;; These apply when `logos-focus-mode' is enabled.  Their value is
+  ;; buffer-local.
+  (setq-default logos-hide-cursor nil
+                logos-hide-mode-line t
+                logos-hide-header-line t
+                logos-hide-buffer-boundaries t
+                logos-hide-fringe t
+                logos-variable-pitch nil
+                logos-buffer-read-only nil
+                logos-scroll-lock nil
+                logos-olivetti nil)
+
+  (define-key global-map [remap narrow-to-region] #'logos-narrow-dwim)
+  (define-key global-map [remap forward-page] #'logos-forward-page-dwim)
+  (define-key global-map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key global-map (kbd "<f9>") #'logos-focus-mode))
+#+end_src
