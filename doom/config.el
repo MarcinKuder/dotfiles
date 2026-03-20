@@ -44,6 +44,18 @@
 (setq epg-user-id "marcin.kuder@gmail.com")
 (setq epg-pinentry-mode 'loopback)
 
+(require 'auth-source)
+(let ((gcal-auth (car (auth-source-search :host "calendar.google.com"))))
+  (when gcal-auth
+    (use-package! org-gcal
+      :after org
+      :config
+      (setq org-gcal-client-id (plist-get gcal-auth :user)
+            org-gcal-client-secret (funcall (plist-get gcal-auth :secret))
+            org-gcal-fetch-file-alist
+            '(("marcin.kuder@gmail.com" . "~/Documents/org/gcal.org"))
+            org-gcal-up-days 7
+            org-gcal-down-days 30))))
 
 (use-package! calfw
   :commands cfw:open-calendar-buffer
@@ -275,201 +287,205 @@
 ;; :config
 ;;      (hel-mode))
 
-;; (defun meow-word ()
-;;   "Expand word/symbol under cursor."
-;;   (interactive)
-;;   (if (and (use-region-p)
-;;            (equal (car (region-bounds));;                   (bounds-of-thing-at-point 'word)))
-;;       (meow-mark-symbol 1)
-;;     (progn
-;;       (when (and (mark)
-;;                  (equal (car (region-bounds))
-;;                         (bounds-of-thing-at-point 'symbol)))
-;;         (meow-pop-selection))
-;;       (meow-mark-word 1))))
+(unless (modulep! :editor evil)
 
-;; (defun meow-kill-line ()
-;;   "Kill till the end of line."
-;;   (interactive)
-;;   (let ((select-enable-clipboard meow-use-clipboard))
-;;     (kill-line)))
+(defun meow-word ()
+  "Expand word/symbol under cursor."
+  (interactive)
+  (if (and (use-region-p)
+           (equal (car (region-bounds))
+                  (bounds-of-thing-at-point 'word)))
+      (meow-mark-symbol 1)
+    (progn
+      (when (and (mark)
+                 (equal (car (region-bounds))
+                        (bounds-of-thing-at-point 'symbol)))
+        (meow-pop-selection))
+      (meow-mark-word 1))))
 
-;; (defun meow-change-line ()
-;;   "Kill till end of line and switch to INSERT state."
-;;   (interactive)
-;;   (meow--cancel-selection)
-;;   (meow-end-of-thing
-;;    (car (rassoc 'line meow-char-thing-table)))
-;;   (meow-change))
+(defun meow-kill-line ()
+  "Kill till the end of line."
+  (interactive)
+  (let ((select-enable-clipboard meow-use-clipboard))
+    (kill-line)))
 
-;; (defun meow-save-clipboard ()
-;;   "Copy in clipboard."
-;;   (interactive)
-;;   (let ((meow-use-clipboard t))
-;;     (meow-save)))
+(defun meow-change-line ()
+  "Kill till end of line and switch to INSERT state."
+  (interactive)
+  (meow--cancel-selection)
+  (meow-end-of-thing
+   (car (rassoc 'line meow-char-thing-table)))
+  (meow-change))
 
-;; (defvar meow--trim-yank nil)
+(defun meow-save-clipboard ()
+  "Copy in clipboard."
+  (interactive)
+  (let ((meow-use-clipboard t))
+    (meow-save)))
 
-;; (defun meow-insert-for-yank-advice (orig-fn str)
-;;   "Advice for `insert-for-yank' function to correctly insert lines."
-;;   (when meow--trim-yank
-;;     (setq str (string-trim-right str "\n")))
-;;   (if (and (not (eq (point) (+ 1 (line-end-position 0))))
-;;            (string-match-p "^.+\n$" str))
-;;       (save-excursion
-;;         (beginning-of-line)
-;;         (funcall orig-fn str))
-;;     (funcall orig-fn str)))
+(defvar meow--trim-yank nil)
 
-;; (defun meow-yank-dwim ()
-;;   "Smart yank."
-;;   (interactive)
-;;   (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
-;;   (if (use-region-p)
-;;       (let ((meow--trim-yank t))
-;;         (delete-region (region-beginning) (region-end))
-;;         (meow-yank))
-;;     (meow-yank))
-;;   (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
+(defun meow-insert-for-yank-advice (orig-fn str)
+  "Advice for `insert-for-yank' function to correctly insert lines."
+  (when meow--trim-yank
+    (setq str (string-trim-right str "\n")))
+  (if (and (not (eq (point) (+ 1 (line-end-position 0))))
+           (string-match-p "^.+\n$" str))
+      (save-excursion
+        (beginning-of-line)
+        (funcall orig-fn str))
+    (funcall orig-fn str)))
 
-;; (defun meow-yank-pop-dwim ()
-;;   "Smart yank pop."
-;;   (interactive)
-;;   (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
-;;   (if (use-region-p)
-;;       (let ((meow--trim-yank t))
-;;         (delete-region (region-beginning) (region-end))
-;;         (meow-yank-pop))
-;;     (meow-yank-pop))
-;;   (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
+(defun meow-yank-dwim ()
+  "Smart yank."
+  (interactive)
+  (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
+  (if (use-region-p)
+      (let ((meow--trim-yank t))
+        (delete-region (region-beginning) (region-end))
+        (meow-yank))
+    (meow-yank))
+  (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
 
-;; (defun meow-smart-reverse ()
-;;   "Reverse selection or begin negative argument."
-;;   (interactive)
-;;   (if (use-region-p)
-;;       (meow-reverse)
-;;     (negative-argument nil)))
+(defun meow-yank-pop-dwim ()
+  "Smart yank pop."
+  (interactive)
+  (advice-add 'insert-for-yank :around 'meow-insert-for-yank-advice)
+  (if (use-region-p)
+      (let ((meow--trim-yank t))
+        (delete-region (region-beginning) (region-end))
+        (meow-yank-pop))
+    (meow-yank-pop))
+  (advice-remove 'insert-for-yank 'meow-insert-for-yank-advice))
 
-;; (defun meow-kmacro ()
-;;   "Toggle recording of kmacro."
-;;   (interactive)
-;;   (if defining-kbd-macro
-;;       (meow-end-kmacro)
-;;     (meow-start-kmacro)))
+(defun meow-smart-reverse ()
+  "Reverse selection or begin negative argument."
+  (interactive)
+  (if (use-region-p)
+      (meow-reverse)
+    (negative-argument nil)))
 
-;; (defun meow-eldoc ()
-;;   "Toggle the display of the eldoc window."
-;;   (interactive)
-;;   (if (get-buffer-window eldoc--doc-buffer)
-;;       (delete-window (get-buffer-window eldoc--doc-buffer))
-;;     (eldoc-doc-buffer t)))
+(defun meow-kmacro ()
+  "Toggle recording of kmacro."
+  (interactive)
+  (if defining-kbd-macro
+      (meow-end-kmacro)
+    (meow-start-kmacro)))
 
-;; (meow-thing-register 'angle
-                     ;; '(pair ("<") (">"))
-                     ;; '(pair ("<") (">")))
+(defun meow-eldoc ()
+  "Toggle the display of the eldoc window."
+  (interactive)
+  (if (get-buffer-window eldoc--doc-buffer)
+      (delete-window (get-buffer-window eldoc--doc-buffer))
+    (eldoc-doc-buffer t)))
 
-;; (setq meow-char-thing-table
-      ;; '((?r . round)
-        ;; (?s . square)
-        ;; (?c . curly)
-        ;; (?a . angle)
-        ;; (?g . string)
-        ;; (?p . paragraph)
-        ;; (?l . line)
-        ;; (?b . buffer)))
+(meow-thing-register 'angle
+                     '(pair ("<") (">"))
+                     '(pair ("<") (">")))
 
-;; (defun meow-setup ()
-;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-;;   (meow-motion-define-key
-;;    '("a" . meow-next)
-;;    '("e" . meow-prev)
-;;    '("<escape>" . ignore))
-;;   (meow-leader-define-key
-;;    '("1" . meow-digit-argument)
-;;    '("2" . meow-digit-argument)
-;;    '("3" . meow-digit-argument)
-;;    '("4" . meow-digit-argument)
-;;    '("5" . meow-digit-argument)
-;;    '("6" . meow-digit-argument)
-;;    '("7" . meow-digit-argument)
-;;    '("8" . meow-digit-argument)
-;;    '("9" . meow-digit-argument)
-;;    '("0" . meow-digit-argument)
-;;    '("/" . meow-keypad-describe-key)
-;;    '("?" . meow-cheatsheet))
-;;   (meow-normal-define-key
-;;    '("0" . meow-expand-0)
-;;    '("9" . meow-expand-9)
-;;    '("8" . meow-expand-8)
-;;    '("7" . meow-expand-7)
-;;    '("6" . meow-expand-6)
-;;    '("5" . meow-expand-5)
-;;    '("4" . meow-expand-4)
-;;    '("3" . meow-expand-3)
-;;    '("2" . meow-expand-2)
-;;    '("1" . meow-expand-1)
-;;    '("^" . negative-argument)
-;;    '("b" . meow-join)
-;;    '(";" . meow-reverse)
-;;    '("k" . meow-inner-of-thing)
-;;    '("K" . meow-bounds-of-thing)
-;;    '("y" . meow-beginning-of-thing)
-;;    '("," . meow-end-of-thing)
-;;    '("s" . meow-append)
-;;    '("S" . meow-open-below)
-;;    '("'" . meow-back-word)
-;;    '("\"" . meow-back-symbol)
-;;    '("c" . meow-change)
-;;    '("x" . meow-delete)
-;;    '("X" . meow-backward-delete)
-;;    '("/" . meow-next-word)
-;;    '("?" . meow-next-symbol)
-;;    '("f" . meow-find)
-;;    '("F" . meow-pop-to-mark)
-;;    '("<" . meow-unpop-to-mark)
-;;    '("g" . meow-cancel-selection)
-;;    '("G" . meow-grab)
-;;    '("h" . meow-left)
-;;    '("H" . meow-left-expand)
-;;    '("n" . meow-insert)
-;;    '("N" . meow-open-above)
-;;    '("a" . meow-next)
-;;    '("A" . meow-next-expand)
-;;    '("e" . meow-prev)
-;;    '("E" . meow-prev-expand)
-;;    '("i" . meow-right)
-;;    '("I" . meow-right-expand)
-;;    '("j" . repeat)
-;;    '("z" . meow-search)
-;;    '("o" . meow-block)
-;;    '("O" . meow-to-block)
-;;    '("w" . meow-yank)
-;;    '("q" . meow-quit)
-;;    '("Q" . meow-goto-line)
-;;    '("R" . meow-replace)
-;;    '("d" . meow-kill)
-;;    '("t" . meow-till)
-;;    '("u" . meow-undo)
-;;    '("U" . undo-redo)
-;;    '("v" . meow-visit)
-;;    '("." . meow-mark-word)
-;;    '(">" . meow-mark-symbol)
-;;    '("l" . meow-line)
-;;    '("L" . meow-goto-line)
-;;    '("m" . meow-save)
-;;    '("Z" . meow-pop-selection)
-;;    '("{" . backward-paragraph)
-;;    '("}" . forward-paragraph)
-;;    '(":" . execute-extended-command)
-;;    '("$" . save-buffer)
-;;    '("_" . avy-goto-char-timer)
-;;    '("-" . switch-to-buffer)
-;;    '("#" . comment-line)
-;;    '("=" . +lookup/references)
-;;    '("*" . magit)
-;;    '("<escape>" . ignore)))
+(setq meow-char-thing-table
+      '((?r . round)
+        (?s . square)
+        (?c . curly)
+        (?a . angle)
+        (?g . string)
+        (?p . paragraph)
+        (?l . line)
+        (?b . buffer)))
 
-;; (meow-setup)
+(defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-define-key
+   '("a" . meow-next)
+   '("e" . meow-prev)
+   '("<escape>" . ignore))
+  (meow-leader-define-key
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("^" . negative-argument)
+   '("b" . meow-join)
+   '(";" . meow-reverse)
+   '("k" . meow-inner-of-thing)
+   '("K" . meow-bounds-of-thing)
+   '("y" . meow-beginning-of-thing)
+   '("," . meow-end-of-thing)
+   '("s" . meow-append)
+   '("S" . meow-open-below)
+   '("'" . meow-back-word)
+   '("\"" . meow-back-symbol)
+   '("c" . meow-change)
+   '("x" . meow-delete)
+   '("X" . meow-backward-delete)
+   '("/" . meow-next-word)
+   '("?" . meow-next-symbol)
+   '("f" . meow-find)
+   '("F" . meow-pop-to-mark)
+   '("<" . meow-unpop-to-mark)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("n" . meow-insert)
+   '("N" . meow-open-above)
+   '("a" . meow-next)
+   '("A" . meow-next-expand)
+   '("e" . meow-prev)
+   '("E" . meow-prev-expand)
+   '("i" . meow-right)
+   '("I" . meow-right-expand)
+   '("j" . repeat)
+   '("z" . meow-search)
+   '("o" . meow-block)
+   '("O" . meow-to-block)
+   '("w" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("R" . meow-replace)
+   '("d" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . undo-redo)
+   '("v" . meow-visit)
+   '("." . meow-mark-word)
+   '(">" . meow-mark-symbol)
+   '("l" . meow-line)
+   '("L" . meow-goto-line)
+   '("m" . meow-save)
+   '("Z" . meow-pop-selection)
+   '("{" . backward-paragraph)
+   '("}" . forward-paragraph)
+   '(":" . execute-extended-command)
+   '("$" . save-buffer)
+   '("_" . avy-goto-char-timer)
+   '("-" . switch-to-buffer)
+   '("#" . comment-line)
+   '("=" . +lookup/references)
+   '("*" . magit)
+   '("<escape>" . ignore)))
+
+(meow-setup)
+(meow-global-mode 1)
 
 (custom-set-faces!
   ;;   `(font-lock-function-name-face :foreground ,(doom-color 'aqua) :weight bold)
@@ -482,12 +498,29 @@
   ;;   `(font-lock-string-face :foreground ,(doom-color 'green))
   )
 
-;;(after! meow
-  ;;(custom-set-faces!
-    ;;`(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-    ;;`(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
-    ;;`(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
-    ;;`(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+(after! meow
+  ;; Show meow state indicator in doom-modeline
+  (setq doom-modeline-modal t
+        doom-modeline-modal-icon t)
+
+  ;; Disable expand hints
+  (setq meow-expand-hint-remove-delay 0)
+
+  ;; Cursor shape per state
+  (setq meow-cursor-type-normal 'box
+        meow-cursor-type-insert '(bar . 2)
+        meow-cursor-type-keypad 'hollow
+        meow-cursor-type-beacon 'hollow
+        meow-cursor-type-motion 'box)
+
+  (custom-set-faces!
+    `(meow-position-highlight-number :foreground "#ffffff" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    `(meow-position-highlight-number-1 :foreground "#777777" :background ,(doom-darken (doom-color 'base3) 0.3) :weight normal)
+    `(meow-position-highlight-number-2 :foreground "#999999" :background ,(doom-darken (doom-color 'base3) 0.2) :weight normal)
+    `(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
+
+) ;; end (unless (modulep! :editor evil) ...)
+
 
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
@@ -638,3 +671,8 @@
         ;; User info
         user-mail-address "marcin.kuder@gmail.com"
         user-full-name "Marcin Kuder"))
+
+;; Disable meow expand hints (runs after everything is loaded)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (advice-add 'meow--maybe-highlight-num-positions :override #'ignore)))

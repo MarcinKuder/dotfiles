@@ -54,8 +54,8 @@
        ;;zen               ; distraction-free coding or writing
 
        :editor
-       ;;(meow +clipboard) ; the best editor in the universe
-       (evil +everywhere); come to the dark side, we have cookies
+       (meow +qwerty)    ; lightweight modal editing
+       ;; (evil +everywhere); come to the dark side, we have cookies
        file-templates    ; auto-snippets for empty files
        fold              ; (nigh) universal code folding
        (format +onsave)  ; automated prettiness
