@@ -1,0 +1,167 @@
+#+TITLE: Meow Cheatsheet — Gallium Layout (Column-Staggered Split)
+#+AUTHOR: Marcin
+#+STARTUP: showall
+
+* Normal Mode
+
+** Base Layer
+
+#+begin_example
+ ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮       ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮
+ │ b       ││ l       ││ d       ││ c       ││ v       │       │ z       ││ y       ││ o       ││ u       ││ ,       │
+ │ join    ││ line    ││ kill    ││ yank    ││ pop-sel │       │ repeat  ││ beg-thg ││ block   ││ undo    ││ end-thg │
+ ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
+ ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
+ │ n       ││ r       ││ t       ││ s       ││ g       │       │ p       ││ h       ││ a       ││ e       ││ i       │
+ │ till    ││ change  ││ insert  ││ append  ││ cancel  │       │         ││ ◀ left  ││ ▼ next  ││ ▲ prev  ││ ▶ right │
+ ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
+ ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
+ │ q       ││ x       ││ m       ││ w       ││ j       │       │ k       ││ f       ││ '       ││ ;       ││ .       │
+ │ delete  ││ quit    ││ save    ││ visit   ││ search  │       │ inner   ││ find    ││ bk-word ││ reverse ││ mk-word │
+ ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯       ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯
+#+end_example
+
+** Shifted Layer
+
+#+begin_example
+ ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮       ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮
+ │ B       ││ L       ││ D       ││ C       ││ V       │       │ Z       ││ Y       ││ O       ││ U       ││ <       │
+ │         ││ go-line ││         ││         ││         │       │         ││         ││ to-blck ││ redo    ││ unpop-mk│
+ ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
+ ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
+ │ N       ││ R       ││ T       ││ S       ││ G       │       │ P       ││ H       ││ A       ││ E       ││ I       │
+ │         ││ replace ││ open-ab ││ open-bl ││ grab    │       │         ││ ◀ expnd ││ ▼ expnd ││ ▲ expnd ││ ▶ expnd │
+ ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
+ ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
+ │ Q       ││ X       ││ M       ││ W       ││ J       │       │ K       ││ F       ││ "       ││ :       ││ >       │
+ │ bk-del  ││ go-line ││         ││         ││ pop-sel │       │ bounds  ││ pop-mk  ││ bk-sym  ││         ││ mk-sym  │
+ ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯       ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯
+#+end_example
+
+** Number Row (expand selection by N)
+
+#+begin_example
+  1         2         3         4         5         6         7         8         9         0
+  expand-1  expand-2  expand-3  expand-4  expand-5  expand-6  expand-7  expand-8  expand-9  expand-0
+#+end_example
+
+* Symbol Keys
+
+| Key | Command                 | Description                  |
+|-----+-------------------------+------------------------------|
+| {   | backward-paragraph      | Jump to previous paragraph   |
+| }   | forward-paragraph       | Jump to next paragraph       |
+| ^   | negative-argument       | Negate numeric prefix        |
+| :   | execute-extended-command | M-x command prompt           |
+| $   | save-buffer             | Save file                    |
+| _   | avy-goto-char-timer     | Avy jump to any visible char |
+| -   | switch-to-buffer        | Switch buffer                |
+| #   | comment-line            | Toggle line comment          |
+| =   | +lookup/references      | Find references              |
+| *   | magit-status            | Open git interface           |
+| /   | meow-next-word          | Move forward one word        |
+| ?   | meow-next-symbol        | Move forward one symbol      |
+
+* Motion Mode
+
+| Key | Command       | Description            |
+|-----+---------------+------------------------|
+| a   | next-line     | Move cursor down       |
+| e   | previous-line | Move cursor up         |
+| ESC | ignore        | Do nothing             |
+
+* Leader Key (SPC)
+
+| Key | Command                  | Description                   |
+|-----+--------------------------+-------------------------------|
+| 0-9 | meow-digit-argument      | Numeric prefix argument       |
+| /   | meow-keypad-describe-key | Show what a key sequence does |
+| ?   | meow-cheatsheet          | Display keybinding cheatsheet |
+| a   | C-a (original binding)   | Restored motion-shadowed key  |
+| e   | C-e (original binding)   | Restored motion-shadowed key  |
+
+* Function Reference
+
+** Editing
+
+| Key | Function             | Description                                                      |
+|-----+----------------------+------------------------------------------------------------------|
+| t   | meow-insert          | Enter insert mode before cursor                                  |
+| T   | meow-open-above      | Open new line above and enter insert mode                        |
+| s   | meow-append          | Enter insert mode after cursor                                   |
+| S   | meow-open-below      | Open new line below and enter insert mode                        |
+| r   | meow-change          | Delete selection and enter insert mode                           |
+| R   | meow-replace         | Replace selection with killed text (swap)                        |
+| q   | meow-delete          | Delete selection or char after cursor                            |
+| Q   | meow-backward-delete | Delete selection or char before cursor                           |
+| d   | meow-kill            | Kill (cut) selection or to end of line                           |
+| c   | meow-yank            | Paste killed/copied text                                         |
+| m   | meow-save            | Copy selection to kill ring without deleting                     |
+| u   | undo-only            | Undo last change                                                 |
+| U   | undo-redo            | Redo last undone change                                          |
+| b   | meow-join            | Join current line with the next line                             |
+| #   | comment-line         | Toggle comment on current line                                   |
+| $   | save-buffer          | Save current buffer to disk                                      |
+
+** Movement
+
+| Key | Function              | Description                                                     |
+|-----+-----------------------+-----------------------------------------------------------------|
+| h   | meow-left             | Move cursor one char left                                       |
+| i   | meow-right            | Move cursor one char right                                      |
+| a   | meow-next             | Move cursor down one line                                       |
+| e   | meow-prev             | Move cursor up one line                                         |
+| H   | meow-left-expand      | Move left and expand selection                                  |
+| I   | meow-right-expand     | Move right and expand selection                                 |
+| A   | meow-next-expand      | Move down and expand selection                                  |
+| E   | meow-prev-expand      | Move up and expand selection                                    |
+| '   | meow-back-word        | Move backward one word                                          |
+| "   | meow-back-symbol      | Move backward one symbol                                        |
+| /   | meow-next-word        | Move forward one word                                           |
+| ?   | meow-next-symbol      | Move forward one symbol                                         |
+| f   | meow-find             | Jump to next occurrence of a char (inclusive)                    |
+| n   | meow-till             | Jump to next occurrence of a char (exclusive)                    |
+| ;   | meow-reverse          | Reverse direction of last find/till                              |
+| L   | meow-goto-line        | Jump to a specific line number                                  |
+| X   | meow-goto-line        | Jump to a specific line number                                  |
+| {   | backward-paragraph    | Jump to previous paragraph                                      |
+| }   | forward-paragraph     | Jump to next paragraph                                          |
+| _   | avy-goto-char-timer   | Avy: jump to any visible char by typing it                      |
+
+** Selection
+
+| Key | Function                | Description                                                   |
+|-----+-------------------------+---------------------------------------------------------------|
+| l   | meow-line               | Select current line (repeat to extend)                        |
+| .   | meow-mark-word          | Select word at point                                          |
+| >   | meow-mark-symbol        | Select symbol at point                                        |
+| o   | meow-block              | Select current block (between parens/brackets)                |
+| O   | meow-to-block           | Move to other end of block selection                          |
+| k   | meow-inner-of-thing     | Select inner part of a thing (prompted)                       |
+| K   | meow-bounds-of-thing    | Select bounds of a thing including delimiters (prompted)      |
+| y   | meow-beginning-of-thing | Select from cursor to beginning of a thing (prompted)         |
+| ,   | meow-end-of-thing       | Select from cursor to end of a thing (prompted)               |
+| g   | meow-cancel-selection   | Cancel current selection                                      |
+| G   | meow-grab               | Grab selection (secondary selection for swap/sync)            |
+| v   | meow-pop-selection      | Pop to previous selection                                     |
+| J   | meow-pop-selection      | Pop to previous selection                                     |
+| 1-9 | meow-expand-N           | Expand selection by N units in current direction              |
+
+** Search & Navigation
+
+| Key | Function           | Description                                                      |
+|-----+--------------------+------------------------------------------------------------------|
+| j   | meow-search        | Search for next occurrence of current selection                   |
+| w   | meow-visit         | Search buffer using regexp and select match                      |
+| z   | repeat             | Repeat last command                                              |
+| -   | switch-to-buffer   | Switch to another buffer                                         |
+| =   | +lookup/references | Find references to symbol at point                               |
+| *   | magit-status       | Open Magit git interface                                         |
+| F   | pop-to-mark-command| Pop to previous position in mark ring                            |
+| :   | M-x                | Execute any Emacs command by name                                |
+
+* Notes
+
+- Navigation cluster (=h a e i=) sits on the right-hand home row on Gallium
+- =p= is unbound — good candidate for custom binding
+- Things (prompted by =y=, =,=, =k=, =K=): round, square, curly, string, paragraph, line, buffer, etc.

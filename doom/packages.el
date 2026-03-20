@@ -67,6 +67,9 @@
   :recipe (:host github :repo "chep/copilot-chat.el" :files ("*.el")))
 
 (package! org-super-agenda)
+(package! org-gcal)
+(package! calfw)
+(package! calfw-org)
 
 
 (package! dired-du)

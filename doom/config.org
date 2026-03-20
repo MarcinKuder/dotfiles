@@ -7,6 +7,12 @@
 This is my personal Doom Emacs configuration, written as a literate Org file.
 Doom will automatically tangle this to =config.el= on startup.
 
+* Keybindings
+
+#+begin_src emacs-lisp
+(map! "C-c ," #'persp-switch-to-buffer)
+#+end_src
+
 * UI
 ** THEME
 
@@ -102,25 +108,24 @@ Archive to a datetree structure.
 
 ** Org Google Calendar
 
-Sync with Google Calendar. Credentials stored in =~/.authinfo.gpg=:
+Sync with Google Calendar. Credentials stored in =~/.authinfo=:
 : machine calendar.google.com login CLIENT_ID password CLIENT_SECRET
 
 #+begin_src emacs-lisp
-(setq epg-user-id "marcin.kuder@gmail.com")
-(setq epg-pinentry-mode 'loopback)
-
 (require 'auth-source)
-(let ((gcal-auth (car (auth-source-search :host "calendar.google.com"))))
-  (when gcal-auth
-    (use-package! org-gcal
-      :after org
-      :config
+(setq auth-sources '("~/.authinfo"))
+(use-package! org-gcal
+  :after org
+  :init
+  (let ((gcal-auth (car (auth-source-search :host "calendar.google.com"))))
+    (when gcal-auth
       (setq org-gcal-client-id (plist-get gcal-auth :user)
-            org-gcal-client-secret (funcall (plist-get gcal-auth :secret))
-            org-gcal-fetch-file-alist
-            '(("marcin.kuder@gmail.com" . "~/Documents/org/gcal.org"))
-            org-gcal-up-days 7
-            org-gcal-down-days 30))))
+            org-gcal-client-secret (funcall (plist-get gcal-auth :secret)))))
+  :config
+  (setq org-gcal-fetch-file-alist
+        '(("marcin.kuder@gmail.com" . "~/Documents/org/gcal.org"))
+        org-gcal-up-days 7
+        org-gcal-down-days 30))
 #+end_src
 
 ** Calendar (calfw)
@@ -562,106 +567,6 @@ Custom thing definitions for meow selection.
         (?p . paragraph)
         (?l . line)
         (?b . buffer)))
-#+end_src
-
-*** Key Mappings
-
-Custom QWERTY-based layout with home row navigation (h/a/e/i instead of h/j/k/l).
-
-#+begin_src emacs-lisp
-(defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-define-key
-   '("a" . meow-next)
-   '("e" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("^" . negative-argument)
-   '("b" . meow-join)
-   '(";" . meow-reverse)
-   '("k" . meow-inner-of-thing)
-   '("K" . meow-bounds-of-thing)
-   '("y" . meow-beginning-of-thing)
-   '("," . meow-end-of-thing)
-   '("s" . meow-append)
-   '("S" . meow-open-below)
-   '("'" . meow-back-word)
-   '("\"" . meow-back-symbol)
-   '("c" . meow-change)
-   '("x" . meow-delete)
-   '("X" . meow-backward-delete)
-   '("/" . meow-next-word)
-   '("?" . meow-next-symbol)
-   '("f" . meow-find)
-   '("F" . meow-pop-to-mark)
-   '("<" . meow-unpop-to-mark)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("n" . meow-insert)
-   '("N" . meow-open-above)
-   '("a" . meow-next)
-   '("A" . meow-next-expand)
-   '("e" . meow-prev)
-   '("E" . meow-prev-expand)
-   '("i" . meow-right)
-   '("I" . meow-right-expand)
-   '("j" . repeat)
-   '("z" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("w" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("R" . meow-replace)
-   '("d" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . undo-redo)
-   '("v" . meow-visit)
-   '("." . meow-mark-word)
-   '(">" . meow-mark-symbol)
-   '("l" . meow-line)
-   '("L" . meow-goto-line)
-   '("m" . meow-save)
-   '("Z" . meow-pop-selection)
-   '("{" . backward-paragraph)
-   '("}" . forward-paragraph)
-   '(":" . execute-extended-command)
-   '("$" . save-buffer)
-   '("_" . avy-goto-char-timer)
-   '("-" . switch-to-buffer)
-   '("#" . comment-line)
-   '("=" . +lookup/references)
-   '("*" . magit)
-   '("<escape>" . ignore)))
-
-(meow-setup)
-(meow-global-mode 1)
 #+end_src
 
 * Faces and Theming

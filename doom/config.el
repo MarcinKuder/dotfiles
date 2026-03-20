@@ -1,3 +1,7 @@
+(after! meow
+  (meow-normal-define-key
+   '("U" . undo-fu-only-redo)))
+
 ;; (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-feather-dark)
 (setq doom-theme 'catppuccin)
@@ -41,21 +45,20 @@
   :config
   (org-super-agenda-mode))
 
-(setq epg-user-id "marcin.kuder@gmail.com")
-(setq epg-pinentry-mode 'loopback)
-
 (require 'auth-source)
-(let ((gcal-auth (car (auth-source-search :host "calendar.google.com"))))
-  (when gcal-auth
-    (use-package! org-gcal
-      :after org
-      :config
+(setq auth-sources '("~/.authinfo"))
+(use-package! org-gcal
+  :after org
+  :init
+  (let ((gcal-auth (car (auth-source-search :host "calendar.google.com"))))
+    (when gcal-auth
       (setq org-gcal-client-id (plist-get gcal-auth :user)
-            org-gcal-client-secret (funcall (plist-get gcal-auth :secret))
-            org-gcal-fetch-file-alist
-            '(("marcin.kuder@gmail.com" . "~/Documents/org/gcal.org"))
-            org-gcal-up-days 7
-            org-gcal-down-days 30))))
+            org-gcal-client-secret (funcall (plist-get gcal-auth :secret)))))
+  :config
+  (setq org-gcal-fetch-file-alist
+        '(("marcin.kuder@gmail.com" . "~/Documents/org/gcal.org"))
+        org-gcal-up-days 7
+        org-gcal-down-days 30))
 
 (use-package! calfw
   :commands cfw:open-calendar-buffer
@@ -520,7 +523,6 @@
     `(meow-position-highlight-number-3 :foreground "#aaaaaa" :background ,(doom-darken (doom-color 'base3) 0.1) :weight normal)))
 
 ) ;; end (unless (modulep! :editor evil) ...)
-
 
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
