@@ -83,6 +83,14 @@ Archive to a datetree structure.
   (setq org-archive-location "archive.org::datetree/"))
 #+end_src
 
+** Org Modern 
+
+#+begin_src emacs-lisp
+(with-eval-after-load 'org-modern 
+  (setq org-modern-star 'replace
+        org-modern-replace-stars "◉○◈◇✳"))
+#+end_src
+
 ** Org Super Agenda
 
 #+begin_src emacs-lisp
@@ -94,20 +102,55 @@ Archive to a datetree structure.
 
 ** Org Google Calendar
 
-
-Sync with Google Calendar. Credentials stored in authinfo.
+Sync with Google Calendar. Credentials stored in =~/.authinfo.gpg=:
+: machine calendar.google.com login CLIENT_ID password CLIENT_SECRET
 
 #+begin_src emacs-lisp
 (setq epg-user-id "marcin.kuder@gmail.com")
 (setq epg-pinentry-mode 'loopback)
 
-(require 'auth-source)
-(setq org-gcal-client-id ""
-      ;; org-gcal-client-secret (funcall (plist-get (car (auth-source-search :host "calendar.google.com")) :secret))
+(let ((gcal-auth (car (auth-source-search :host "calendar.google.com"))))
+  (when gcal-auth
+    (use-package! org-gcal
+      :after org
+      :config
+      (setq org-gcal-client-id (plist-get gcal-auth :user)
+            org-gcal-client-secret (funcall (plist-get gcal-auth :secret))
+            org-gcal-fetch-file-alist
+            '(("marcin.kuder@gmail.com" . "~/Documents/org/gcal.org"))
+            org-gcal-up-days 7
+            org-gcal-down-days 30))))
+#+end_src
 
-      org-gcal-client-secret ""
-org-gcal-fetch-file-alist '(("marcin.kuder@gmail.com" . "~/task.org")))
-(require 'org-gcal)
+** Calendar (calfw)
+
+Visual calendar UI showing org-agenda and Google Calendar events.
+
+#+begin_src emacs-lisp
+(use-package! calfw
+  :commands cfw:open-calendar-buffer
+  :config
+  (setq cfw:fchar-junction ?╋
+        cfw:fchar-vertical-line ?┃
+        cfw:fchar-horizontal-line ?━
+        cfw:fchar-left-junction ?┣
+        cfw:fchar-right-junction ?┫
+        cfw:fchar-top-junction ?┳
+        cfw:fchar-top-left-corner ?┏
+        cfw:fchar-top-right-corner ?┓))
+
+(use-package! calfw-org
+  :commands cfw:open-org-calendar)
+
+(defun mq/open-calendar ()
+  "Open calfw calendar with org-agenda sources."
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list (cfw:org-create-source "medium purple"))))
+
+(map! :leader
+      :desc "Open calendar" "o c" #'mq/open-calendar)
 #+end_src
 
 ** Org Journal
@@ -678,7 +721,7 @@ Integration with Claude Code CLI.
 (use-package! claude-code-ide
   :init
   (setq claude-code-ide-cli-path "/Users/marcin/.local/bin/claude")
-  (setq claude-code-ide-window-width 120)
+  (setq claude-code-ide-window-width 125)
   :bind ("C-c C-'" . claude-code-ide-menu)
   :config
   (claude-code-ide-emacs-tools-setup)
@@ -789,4 +832,59 @@ Use main font for Unicode ranges to prevent font fallback flicker.
   (define-key global-map [remap forward-page] #'logos-forward-page-dwim)
   (define-key global-map [remap backward-page] #'logos-backward-page-dwim)
   (define-key global-map (kbd "<f9>") #'logos-focus-mode))
+#+end_src
+
+* Email (mu4e)
+
+Gmail client via mu4e + mbsync.
+
+#+begin_src emacs-lisp
+;; Folder paths must be set before mu4e initializes (Polish Gmail IMAP names)
+(setq mu4e-maildir "~/Mail"
+      mu4e-sent-folder   "/gmail/[Gmail]/Wysłane"
+      mu4e-drafts-folder "/gmail/[Gmail]/Wersje robocze"
+      mu4e-trash-folder  "/gmail/[Gmail]/Kosz"
+      mu4e-refile-folder "/gmail/[Gmail]/Kosz")
+
+(after! mu4e
+ (setq mu4e-view-prefer-html nil)
+   (setq shr-color-visible-luminance-min 80)
+  (setq shr-color-visible-distance-min 5)   
+  (setq mu4e-update-interval 300              ; sync every 5 minutes
+        mu4e-get-mail-command "mbsync -a"
+        mu4e-change-filenames-when-moving t    ; required for mbsync
+        ;; Gmail handles sent messages via IMAP — don't save locally
+        mu4e-sent-messages-behavior 'delete
+
+        ;; Don't confirm on quit
+        mu4e-confirm-quit nil
+
+        ;; Compose
+        mu4e-compose-signature nil
+        mu4e-compose-format-flowed t
+
+        ;; Display
+        mu4e-headers-date-format "%Y-%m-%d"
+        mu4e-headers-time-format "%H:%M"
+        mu4e-use-fancy-chars t
+        mu4e-headers-fields '((:human-date . 12)
+                              (:flags      . 6)
+                              (:from       . 22)
+                              (:subject)))
+
+  ;; SMTP sending via Gmail
+  (setq sendmail-program (executable-find "msmtp")
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function #'message-send-mail-with-sendmail
+
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+        smtpmail-stream-type 'starttls
+        smtpmail-auth-credentials '(("smtp.gmail.com" 587 "marcin.kuder@gmail.com" nil))
+
+        ;; User info
+        user-mail-address "marcin.kuder@gmail.com"
+        user-full-name "Marcin Kuder"))
 #+end_src

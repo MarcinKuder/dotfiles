@@ -68,7 +68,6 @@
 
 (package! org-super-agenda)
 
-(package! org-gcal)
 
 (package! dired-du)
 
