@@ -1,5 +1,53 @@
 (map! "C-c ," #'persp-switch-to-buffer)
 
+(map! :leader
+      ;; SPC w -> windows
+      (:prefix-map ("w" . "window")
+       :desc "Other window"          "w" #'other-window
+       :desc "Split below"           "s" #'split-window-below
+       :desc "Split right"           "v" #'split-window-right
+       :desc "Delete window"         "d" #'delete-window
+       :desc "Delete other windows"  "o" #'delete-other-windows
+       :desc "Maximize buffer"       "m" #'doom/window-maximize-buffer
+       :desc "Undo window config"    "u" #'winner-undo
+       :desc "Redo window config"    "U" #'winner-redo
+       :desc "Window left"           "h" #'windmove-left
+       :desc "Window down"           "a" #'windmove-down
+       :desc "Window up"             "e" #'windmove-up
+       :desc "Window right"          "i" #'windmove-right
+       :desc "Balance windows"       "=" #'balance-windows
+       :desc "Enlarge window"        "+" #'enlarge-window
+       :desc "Shrink window"         "-" #'shrink-window
+       :desc "Widen window"          ">" #'enlarge-window-horizontally
+       :desc "Narrow window"         "<" #'shrink-window-horizontally)
+
+      ;; SPC TAB -> workspaces (like Evil)
+      (:when (modulep! :ui workspaces)
+       (:prefix-map ("TAB" . "workspace")
+        :desc "Display workspaces"        "TAB" #'+workspace/display
+        :desc "Switch workspace"          "."   #'+workspace/switch-to
+        :desc "Switch to last workspace"  "`"   #'+workspace/other
+        :desc "New workspace"             "n"   #'+workspace/new
+        :desc "New named workspace"       "N"   #'+workspace/new-named
+        :desc "Load workspace"            "l"   #'+workspace/load
+        :desc "Save workspace"            "s"   #'+workspace/save
+        :desc "Kill workspace"            "d"   #'+workspace/kill
+        :desc "Delete saved workspace"    "D"   #'+workspace/delete
+        :desc "Rename workspace"          "r"   #'+workspace/rename
+        :desc "Restore last session"      "R"   #'+workspace/restore-last-session
+        :desc "Next workspace"            "]"   #'+workspace/switch-right
+        :desc "Previous workspace"        "["   #'+workspace/switch-left
+        :desc "Switch to 1st workspace"   "1"   #'+workspace/switch-to-0
+        :desc "Switch to 2nd workspace"   "2"   #'+workspace/switch-to-1
+        :desc "Switch to 3rd workspace"   "3"   #'+workspace/switch-to-2
+        :desc "Switch to 4th workspace"   "4"   #'+workspace/switch-to-3
+        :desc "Switch to 5th workspace"   "5"   #'+workspace/switch-to-4
+        :desc "Switch to 6th workspace"   "6"   #'+workspace/switch-to-5
+        :desc "Switch to 7th workspace"   "7"   #'+workspace/switch-to-6
+        :desc "Switch to 8th workspace"   "8"   #'+workspace/switch-to-7
+        :desc "Switch to 9th workspace"   "9"   #'+workspace/switch-to-8
+        :desc "Switch to final workspace" "0"   #'+workspace/switch-to-final)))
+
 ;; (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-feather-dark)
 (setq doom-theme 'catppuccin)
@@ -18,7 +66,7 @@
 (setq doom-font (font-spec :family "Victor Mono" :size (mq/get-font-size)))
 (setq doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
 
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 (setq confirm-kill-emacs nil)
 
@@ -590,3 +638,8 @@
           ("p" "~/proj/"         "Projects")
           ("d" "~/Downloads/"    "Downloads")
           ("n" "~/notes/"        "Notes"))))
+
+(map! :map dirvish-mode-map
+      "TAB" #'dirvish-subtree-toggle
+      "i" #'dired-find-file
+      "h" #'dired-up-directory)
