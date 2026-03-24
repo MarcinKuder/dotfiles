@@ -8,16 +8,16 @@
 
 #+begin_example
  ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮       ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮
- │ b       ││ l       ││ d       ││ c       ││ v       │       │ z       ││ y       ││ o       ││ u       ││ ,       │
- │ join    ││ line    ││ kill    ││ yank    ││ pop-sel │       │ repeat  ││ beg-thg ││ block   ││ undo    ││ end-thg │
+ │ b       ││ l       ││ d       ││ c       ││ v       │       │ z       ││ f       ││ o       ││ u       ││ ;       │
+ │ join    ││ line    ││ kill    ││ save    ││ yank    │       │ pop-sel ││ find    ││ block   ││ undo    ││ reverse │
  ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
+ ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭─────────╮
+ │ n       ││ r       ││ t       ││ s       ││ g       │       │ y       ││ h       ││ a       ││ e       ││ i       ││ ,       │
+ │ till    ││ change  ││ insert  ││ append  ││ cancel  │       │ beg-thg ││ ◀ left  ││ ▼ next  ││ ▲ prev  ││ ▶ right ││ end-thg │
+ ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰─────────╯
  ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
- │ n       ││ r       ││ t       ││ s       ││ g       │       │ p       ││ h       ││ a       ││ e       ││ i       │
- │ till    ││ change  ││ insert  ││ append  ││ cancel  │       │         ││ ◀ left  ││ ▼ next  ││ ▲ prev  ││ ▶ right │
- ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
- ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
- │ q       ││ x       ││ m       ││ w       ││ j       │       │ k       ││ f       ││ '       ││ ;       ││ .       │
- │ delete  ││ quit    ││ save    ││ visit   ││ search  │       │ inner   ││ find    ││ bk-word ││ reverse ││ mk-word │
+ │ q       ││ x       ││ m       ││ w       ││ j       │       │ k       ││ p       ││ '       ││ /       ││ .       │
+ │ quit    ││ delete  ││ repeat  ││ visit   ││ search  │       │ inner   ││         ││ bk-word ││ nxt-wrd ││ mk-word │
  ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯       ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯
 #+end_example
 
@@ -25,16 +25,16 @@
 
 #+begin_example
  ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮       ╭─────────╮╭─────────╮╭─────────╮╭─────────╮╭─────────╮
- │ B       ││ L       ││ D       ││ C       ││ V       │       │ Z       ││ Y       ││ O       ││ U       ││ <       │
- │         ││ go-line ││         ││         ││         │       │         ││         ││ to-blck ││ redo    ││ unpop-mk│
+ │ B       ││ L       ││ D       ││ C       ││ V       │       │ Z       ││ F       ││ O       ││ U       ││ :       │
+ │         ││ go-line ││         ││         ││ yank-pop│       │         ││ pop-mk  ││ to-blck ││ redo    ││ ex-cmd  │
  ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
+ ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭─────────╮
+ │ N       ││ R       ││ T       ││ S       ││ G       │       │ Y       ││ H       ││ A       ││ E       ││ I       ││ <       │
+ │         ││ replace ││ open-ab ││ open-bl ││ grab    │       │         ││ ◀ expnd ││ ▼ expnd ││ ▲ expnd ││ ▶ expnd ││         │
+ ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰─────────╯
  ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
- │ N       ││ R       ││ T       ││ S       ││ G       │       │ P       ││ H       ││ A       ││ E       ││ I       │
- │         ││ replace ││ open-ab ││ open-bl ││ grab    │       │         ││ ◀ expnd ││ ▼ expnd ││ ▲ expnd ││ ▶ expnd │
- ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯       ╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯╰────╮────╯
- ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮       ╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮╭────╰────╮
- │ Q       ││ X       ││ M       ││ W       ││ J       │       │ K       ││ F       ││ "       ││ :       ││ >       │
- │ bk-del  ││ go-line ││         ││         ││ pop-sel │       │ bounds  ││ pop-mk  ││ bk-sym  ││         ││ mk-sym  │
+ │ Q       ││ X       ││ M       ││ W       ││ J       │       │ K       ││ P       ││ "       ││ ?       ││ >       │
+ │         ││ bk-del  ││         ││         ││         │       │ bounds  ││         ││ bk-sym  ││ nxt-sym ││ mk-sym  │
  ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯       ╰─────────╯╰─────────╯╰─────────╯╰─────────╯╰─────────╯
 #+end_example
 
@@ -92,11 +92,12 @@
 | S   | meow-open-below      | Open new line below and enter insert mode                        |
 | r   | meow-change          | Delete selection and enter insert mode                           |
 | R   | meow-replace         | Replace selection with killed text (swap)                        |
-| q   | meow-delete          | Delete selection or char after cursor                            |
-| Q   | meow-backward-delete | Delete selection or char before cursor                           |
+| x   | meow-delete          | Delete selection or char after cursor                            |
+| X   | meow-backward-delete | Delete selection or char before cursor                           |
 | d   | meow-kill            | Kill (cut) selection or to end of line                           |
-| c   | meow-yank            | Paste killed/copied text                                         |
-| m   | meow-save            | Copy selection to kill ring without deleting                     |
+| c   | meow-save            | Copy selection to kill ring without deleting                     |
+| v   | meow-yank            | Paste killed/copied text                                         |
+| V   | meow-yank-pop        | Cycle through kill ring after paste                              |
 | u   | undo-only            | Undo last change                                                 |
 | U   | undo-redo            | Redo last undone change                                          |
 | b   | meow-join            | Join current line with the next line                             |
@@ -143,8 +144,7 @@
 | ,   | meow-end-of-thing       | Select from cursor to end of a thing (prompted)               |
 | g   | meow-cancel-selection   | Cancel current selection                                      |
 | G   | meow-grab               | Grab selection (secondary selection for swap/sync)            |
-| v   | meow-pop-selection      | Pop to previous selection                                     |
-| J   | meow-pop-selection      | Pop to previous selection                                     |
+| z   | meow-pop-selection      | Pop to previous selection                                     |
 | 1-9 | meow-expand-N           | Expand selection by N units in current direction              |
 
 ** Search & Navigation
@@ -153,12 +153,26 @@
 |-----+--------------------+------------------------------------------------------------------|
 | j   | meow-search        | Search for next occurrence of current selection                   |
 | w   | meow-visit         | Search buffer using regexp and select match                      |
-| z   | repeat             | Repeat last command                                              |
+| m   | repeat             | Repeat last command                                              |
 | -   | switch-to-buffer   | Switch to another buffer                                         |
 | =   | +lookup/references | Find references to symbol at point                               |
 | *   | magit-status       | Open Magit git interface                                         |
 | F   | pop-to-mark-command| Pop to previous position in mark ring                            |
 | :   | M-x                | Execute any Emacs command by name                                |
+
+* Custom Functions (config.org)
+
+| Function              | Description                                                                  |
+|-----------------------+------------------------------------------------------------------------------|
+| meow-word             | Toggle word/symbol selection: first call selects word, second expands to symbol |
+| meow-kill-line        | Kill from cursor to end of line, respecting meow-use-clipboard               |
+| meow-change-line      | Kill to end of line and enter insert mode (like vim's C)                     |
+| meow-save-clipboard   | Copy selection to system clipboard regardless of global clipboard setting    |
+| meow-yank-dwim        | Smart paste: replaces region if selected, handles line-wise yanks correctly  |
+| meow-yank-pop-dwim    | Like meow-yank-dwim but cycles through kill ring                             |
+| meow-smart-reverse    | Reverse selection if active, otherwise start negative argument               |
+| meow-kmacro           | Toggle keyboard macro recording (start/stop)                                 |
+| meow-eldoc            | Toggle eldoc documentation window visibility                                 |
 
 * Notes
 

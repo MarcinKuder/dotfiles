@@ -89,7 +89,8 @@
 ;;(package! hel :recipe (:host github :repo "anuvyklack/hel"))
 
 (package! catppuccin-theme)
-
+
 (package! nov)
-
+
 (package! logos)
+

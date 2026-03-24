@@ -14,7 +14,7 @@ Doom will automatically tangle this to =config.el= on startup.
 #+end_src
 
 * UI
-** THEME
+** THEME
 
 Using the Catppuccin theme from Doom's collection.
 
@@ -653,7 +653,7 @@ Integration with Claude Code CLI.
   :config
   (claude-code-ide-emacs-tools-setup)
   (map! :leader
-        (:prefix ("l" . "claude-code")
+        (:prefix ("L" . "claude-code")
          :desc "Menu"             "l" #'claude-code-ide-menu
          :desc "Start session"    "s" #'claude-code-ide
          :desc "Resume session"   "r" #'claude-code-ide-resume
@@ -816,7 +816,18 @@ Gmail client via mu4e + mbsync.
         user-full-name "Marcin Kuder"))
 
 ;; Disable meow expand hints (runs after everything is loaded)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (advice-add 'meow--maybe-highlight-num-positions :override #'ignore)))
+;; (add-hook 'emacs-startup-hook
+;;           (lambda ()
+;;             (advice-add 'meow--maybe-highlight-num-positions :override #'ignore)))
+#+end_src
+
+* Dirvish
+#+begin_src emacs-lisp
+(use-package! dirvish
+  :custom
+  (dirvish-quick-access-entries
+        '(("h" "~/"              "Home")
+          ("p" "~/proj/"         "Projects")
+          ("d" "~/Downloads/"    "Downloads")
+          ("n" "~/notes/"        "Notes"))))
 #+end_src
