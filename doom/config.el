@@ -287,6 +287,9 @@
 (after! kotlin-mode
   (set-formatter! 'ktlint "ktlint --format --stdin" :modes '(kotlin-mode)))
 
+(after! lsp-mode
+  (setq lsp-diagnostics-disabled-modes '(kotlin-mode)))
+
 (defvar mq/android-home (or (getenv "ANDROID_HOME")
                             (expand-file-name "~/Library/Android/sdk"))
   "Path to the Android SDK.")
@@ -355,13 +358,22 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
         (message "App %s not running" package)
       (async-shell-command (format "%s logcat --pid=%s" mq/adb pid) buf))))
 
+(defun mq/logcat-stop ()
+  "Kill all logcat buffers."
+  (interactive)
+  (dolist (buf '("*logcat*" "*logcat-app*"))
+    (when-let ((b (get-buffer buf)))
+      (kill-buffer b)))
+  (message "Logcat stopped"))
+
 (map! :leader
       (:prefix ("r" . "android")
        :desc "Emulator"       "e" #'mq/android-emulator
        :desc "Build & install" "b" #'mq/android-build-install
        :desc "Run app"        "r" #'mq/android-run
        :desc "Logcat"         "l" #'mq/logcat
-       :desc "Logcat (app)"   "a" #'mq/logcat-app))
+       :desc "Logcat (app)"   "a" #'mq/logcat-app
+       :desc "Logcat stop"    "k" #'mq/logcat-stop))
 
 (setq shell-file-name (executable-find "bash"))
 (setq-default vterm-shell "/opt/homebrew/bin/fish")
