@@ -284,6 +284,85 @@
 (setq lsp-zig-zls-executable "/Users/marcin/proj/zig/zls/zig-out/bin/zls")
 (setq lsp-zig-zig-exe-path "/opt/homebrew/bin/zig")
 
+(after! kotlin-mode
+  (set-formatter! 'ktlint "ktlint --format --stdin" :modes '(kotlin-mode)))
+
+(defvar mq/android-home (or (getenv "ANDROID_HOME")
+                            (expand-file-name "~/Library/Android/sdk"))
+  "Path to the Android SDK.")
+
+(defvar mq/adb (expand-file-name "platform-tools/adb" mq/android-home)
+  "Path to the adb binary.")
+
+(defun mq/android-emulator ()
+  "Launch an Android emulator AVD."
+  (interactive)
+  (let* ((emulator (expand-file-name "emulator/emulator" mq/android-home))
+         (avds (split-string
+                (shell-command-to-string (concat emulator " -list-avds"))
+                "\n" t))
+         (avd (completing-read "AVD: " avds nil t)))
+    (start-process "android-emulator" "*emulator*" emulator (concat "@" avd))))
+
+(defun mq/android-build-install ()
+  "Build and install debug APK on connected device/emulator."
+  (interactive)
+  (let ((default-directory (or (locate-dominating-file default-directory "gradlew")
+                               default-directory)))
+    (compile "./gradlew installDebug")))
+
+(defun mq/android-run ()
+  "Launch the app on connected device/emulator.
+Auto-detects package from build.gradle.kts and launcher activity from AndroidManifest.xml."
+  (interactive)
+  (let* ((root (or (locate-dominating-file default-directory "gradlew")
+                   (error "Cannot find project root (no gradlew found)")))
+         (gradle (expand-file-name "app/build.gradle.kts" root))
+         (manifest (expand-file-name "app/src/main/AndroidManifest.xml" root))
+         (package (with-temp-buffer
+                    (insert-file-contents gradle)
+                    (if (re-search-forward "applicationId[ \t]*=[ \t]*\"\\([^\"]+\\)\"" nil t)
+                        (match-string 1)
+                      (error "Cannot find applicationId in %s" gradle))))
+         (activity (with-temp-buffer
+                     (insert-file-contents manifest)
+                     (if (re-search-forward
+                          "<activity[^>]*android:name=\"\\([^\"]+\\)\"\\(?:.\\|\n\\)*?LAUNCHER" nil t)
+                         (match-string 1)
+                       ".MainActivity"))))
+    (async-shell-command
+     (format "%s shell am start -n %s/%s%s" mq/adb package package activity))))
+
+(defun mq/logcat (&optional filter)
+  "Open logcat in a buffer. Optionally FILTER by tag."
+  (interactive "sFilter tag (blank for all): ")
+  (let* ((buf "*logcat*")
+         (cmd (if (string-empty-p filter)
+                  (format "%s logcat -v brief" mq/adb)
+                (format "%s logcat -s %s:V *:S" mq/adb filter))))
+    (when (get-buffer buf) (kill-buffer buf))
+    (async-shell-command cmd buf)))
+
+(defun mq/logcat-app (package)
+  "Show logcat filtered to PACKAGE's PID."
+  (interactive "sPackage name: ")
+  (let* ((pid (string-trim
+               (shell-command-to-string
+                (format "%s shell pidof %s" mq/adb package))))
+         (buf "*logcat-app*"))
+    (when (get-buffer buf) (kill-buffer buf))
+    (if (string-empty-p pid)
+        (message "App %s not running" package)
+      (async-shell-command (format "%s logcat --pid=%s" mq/adb pid) buf))))
+
+(map! :leader
+      (:prefix ("r" . "android")
+       :desc "Emulator"       "e" #'mq/android-emulator
+       :desc "Build & install" "b" #'mq/android-build-install
+       :desc "Run app"        "r" #'mq/android-run
+       :desc "Logcat"         "l" #'mq/logcat
+       :desc "Logcat (app)"   "a" #'mq/logcat-app))
+
 (setq shell-file-name (executable-find "bash"))
 (setq-default vterm-shell "/opt/homebrew/bin/fish")
 (setq-default explicit-shell-file-name "/opt/homebrew/bin/fish")
