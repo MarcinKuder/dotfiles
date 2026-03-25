@@ -513,16 +513,16 @@
          :desc "List sessions"    "L" #'claude-code-ide-list-sessions
          :desc "Send escape"      "e" #'claude-code-ide-send-escape)))
 
-(dolist (range '((#x23FA . #x23FA)   ; bullet
-                 (#x2700 . #x27BF)   ; Dingbats (spinner chars)
-                 (#x2200 . #x22FF)   ; Math operators
-                 (#x2800 . #x28FF)   ; Braille patterns (common spinners)
-                 (#x25A0 . #x25FF)   ; Geometric shapes
-                 (#x2580 . #x259F)   ; Block elements
-                 (#x2500 . #x257F)   ; Box drawing
-                 (#x1F500 . #x1F5FF) ; Miscellaneous symbols
-                 (#xE000 . #xF8FF))) ; Private use area (Nerd Fonts)
-  (set-char-table-range char-width-table range 1))
+;; (dolist (range '((#x23FA . #x23FA)   ; bullet
+                 ;; (#x2700 . #x27BF)   ; Dingbats (spinner chars)
+                 ;; (#x2200 . #x22FF)   ; Math operators
+                 ;; (#x2800 . #x28FF)   ; Braille patterns (common spinners)
+                 ;; (#x25A0 . #x25FF)   ; Geometric shapes
+                 ;; (#x2580 . #x259F)   ; Block elements
+                 ;; (#x2500 . #x257F)   ; Box drawing
+                 ;; (#x1F500 . #x1F5FF) ; Miscellaneous symbols
+                 ;; (#xE000 . #xF8FF))) ; Private use area (Nerd Fonts)
+  ;; (set-char-table-range char-width-table range 1))
 
 (defun my/setup-claude-fontset ()
   "Set up fonts for Claude Code Unicode characters to prevent flicker."
@@ -536,16 +536,16 @@
 (my/setup-claude-fontset)
 (add-hook 'after-setting-font-hook #'my/setup-claude-fontset)
 
-(setq redisplay-skip-fontification-on-input t)
-(setq fast-but-imprecise-scrolling t)
-(blink-cursor-mode -1)
+;; (setq redisplay-skip-fontification-on-input t)
+;; (setq fast-but-imprecise-scrolling t)
+;; (blink-cursor-mode -1)
 
-(after! vterm
-  (setq vterm-timer-delay 0.2)
-  (setq vterm-buffer-name-string nil)
-  (setq vterm-max-scrollback 5000))
+;; (after! vterm
+  ;; (setq vterm-timer-delay 0.2)
+  ;; (setq vterm-buffer-name-string nil)
+  ;; (setq vterm-max-scrollback 5000))
 
-(setenv "CLAUDE_CODE_DISABLE_TERMINAL_TITLE" "1")
+;; (setenv "CLAUDE_CODE_DISABLE_TERMINAL_TITLE" "1")
 
 (use-package! nov
   :mode ("\\.epub\\'" . nov-mode))
