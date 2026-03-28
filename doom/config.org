@@ -124,6 +124,16 @@ Set the org directory before org loads.
 (setq org-directory "~/Documents/org")
 #+end_src
 
+** Meow RET in Org
+
+#+begin_src emacs-lisp
+(after! org
+  (define-key org-mode-map (kbd "<return>")
+    (cmd! (if (meow-normal-mode-p)
+              (+org/dwim-at-point)
+            (org-return)))))
+#+end_src
+
 ** Agenda and Logging
 
 #+begin_src emacs-lisp

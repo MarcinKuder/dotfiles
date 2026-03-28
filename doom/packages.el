@@ -94,3 +94,6 @@
 
 (package! logos)
 
+;; Android / Kotlin
+(package! groovy-mode)  ; Gradle build files
+

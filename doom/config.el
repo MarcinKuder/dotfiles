@@ -73,6 +73,12 @@
 (setq org-directory "~/Documents/org")
 
 (after! org
+  (define-key org-mode-map (kbd "<return>")
+    (cmd! (if (meow-normal-mode-p)
+              (+org/dwim-at-point)
+            (org-return)))))
+
+(after! org
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t))
@@ -287,6 +293,8 @@
 (after! kotlin-mode
   (set-formatter! 'ktlint "ktlint --format --stdin" :modes '(kotlin-mode)))
 
+;; kotlin-language-server can't resolve Android/Compose dependencies,
+;; producing false "unresolved reference" errors on every import
 (after! lsp-mode
   (setq lsp-diagnostics-disabled-modes '(kotlin-mode)))
 
