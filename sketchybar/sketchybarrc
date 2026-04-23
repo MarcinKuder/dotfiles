@@ -12,79 +12,38 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # If you are looking for other colors, see the color picker:
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
-sketchybar --bar position=top height=36 blur_radius=30 color=0x40000000
+sketchybar --bar position=top height=36 blur_radius=30 color=0xd0101010
 
 ##### Changing Defaults #####
 # We now change some default values, which are applied to all further items.
 # For a full list of all available item properties see:
 # https://felixkratz.github.io/SketchyBar/config/items
 
-default=(
-  padding_left=5
-  padding_right=5
-  icon.font="Maple Mono NF:Semibold:16.0"
-  label.font="Maple Mono NF:Semibold:14.0"
-  icon.color=0xffffffff
-  label.color=0xffffffff
-  icon.padding_left=4
-  icon.padding_right=4
-  label.padding_left=4
-  label.padding_right=4
-)
-sketchybar --default "${default[@]}"
+default=( padding_left=5 padding_right=5 icon.font="VictorMono Nerd Font:Semibold:16.0" label.font="VictorMono Nerd Font:Semibold:14.0"
+  icon.color=0xffc6c6c6 label.color=0xffc6c6c6 icon.padding_left=4
+  icon.padding_right=4 label.padding_left=4 label.padding_right=4 )
+  sketchybar --default "${default[@]}"
 
 # Aerospace
-# sketchybar --add event aerospace_workspace_change
-# for sid in $(aerospace list-workspaces --all); do
-#   sketchybar --add item space.$sid left \
-#     --subscribe space.$sid aerospace_workspace_change \
-#     --set space.$sid \
-#     icon.padding_left=0 \
-#     icon.padding_right=0 \
-#     label.padding_left=10 \
-#     label.padding_right=10 \
-#     background.padding_left=0 \
-#     background.padding_right=0 \
-#     background.color=0x44ffffff \
-#     background.corner_radius=5 \
-#     background.height=20 \
-#     background.drawing=off \
-#     label="$sid" \
-#     click_script="aerospace workspace $sid" \
-#     script="$CONFIG_DIR/plugins/aerospace.sh $sid"
-# done
-#
-# for sid in $(aerospace list-windows --all --format %{workspace} | sort -u); do
-#   sketchybar --set space.$sid \
-#     label.color=$RED
-# done
-
-# Flashspace
-sketchybar --add event flashspace_workspace_change
-
-SID=1
-WORKSPACES=$(/Applications/FlashSpace.app/Contents/Resources/flashspace list-workspaces)
-
-for workspace in $WORKSPACES; do
-  sketchybar --add item flashspace.$SID left \
-    --subscribe flashspace.$SID flashspace_workspace_change \
-    --set flashspace.$SID \
+sketchybar --add event aerospace_workspace_change
+for sid in $(aerospace list-workspaces --all); do
+  sketchybar --add item space.$sid left \
+    --subscribe space.$sid aerospace_workspace_change \
+    --set space.$sid \
     icon.padding_left=0 \
     icon.padding_right=0 \
     label.padding_left=10 \
     label.padding_right=10 \
     background.padding_left=0 \
     background.padding_right=0 \
-    background.color=0x44ffffff \
+    background.color=0xff393925 \
     background.corner_radius=5 \
     background.height=20 \
     background.drawing=off \
-    label="$workspace" \
-    script="$CONFIG_DIR/plugins/flashspace.sh $workspace"
-
-  SID=$((SID + 1))
+    label="$sid" \
+    click_script="aerospace workspace $sid" \
+    script="$CONFIG_DIR/plugins/aerospace.sh $sid"
 done
-
 
 ##### Adding Left Items #####
 # We add some regular items to the left side of the bar, where
