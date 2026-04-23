@@ -14,10 +14,13 @@ if [ -z "$FOCUSED_SID" ]; then
   FOCUSED_SID="$(aerospace list-workspaces --focused)"
 fi
 
+FOCUSED_BG=0xff393925
+UNFOCUSED_BG=0x40393925
+
 if [ "$SID" = "$FOCUSED_SID" ]; then
-  sketchybar --set "$NAME" background.drawing=on
+  sketchybar --set "$NAME" background.color=$FOCUSED_BG
 else
-  sketchybar --set "$NAME" background.drawing=off
+  sketchybar --set "$NAME" background.color=$UNFOCUSED_BG
 fi
 
 apps=$(aerospace list-windows --workspace "$SID" --format "%{app-name}")
@@ -30,9 +33,15 @@ if [ -n "$apps" ]; then
   done <<< "$apps"
   sketchybar --set "$NAME" \
     label="$icon_strip" \
+    icon.padding_left=8 \
+    icon.padding_right=8 \
+    label.padding_right=8 \
     icon.color=$OCCUPIED_COLOR
 else
   sketchybar --set "$NAME" \
     label="" \
+    icon.padding_left=12 \
+    icon.padding_right=12 \
+    label.padding_right=0 \
     icon.color=$EMPTY_COLOR
 fi
