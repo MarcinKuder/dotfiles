@@ -3,55 +3,56 @@
 (map! :leader
       ;; SPC w -> windows
       (:prefix-map ("w" . "window")
-       :desc "Other window"          "w" #'other-window
-       :desc "Split below"           "s" #'split-window-below
-       :desc "Split right"           "v" #'split-window-right
-       :desc "Delete window"         "d" #'delete-window
-       :desc "Delete other windows"  "o" #'delete-other-windows
-       :desc "Maximize buffer"       "m" #'doom/window-maximize-buffer
-       :desc "Undo window config"    "u" #'winner-undo
-       :desc "Redo window config"    "U" #'winner-redo
-       :desc "Window left"           "h" #'windmove-left
-       :desc "Window down"           "a" #'windmove-down
-       :desc "Window up"             "e" #'windmove-up
-       :desc "Window right"          "i" #'windmove-right
-       :desc "Balance windows"       "=" #'balance-windows
-       :desc "Enlarge window"        "+" #'enlarge-window
-       :desc "Shrink window"         "-" #'shrink-window
-       :desc "Widen window"          ">" #'enlarge-window-horizontally
-       :desc "Narrow window"         "<" #'shrink-window-horizontally)
+                   :desc "Other window"          "w" #'other-window
+                   :desc "Split below"           "s" #'split-window-below
+                   :desc "Split right"           "v" #'split-window-right
+                   :desc "Delete window"         "d" #'delete-window
+                   :desc "Delete other windows"  "o" #'delete-other-windows
+                   :desc "Maximize buffer"       "m" #'doom/window-maximize-buffer
+                   :desc "Undo window config"    "u" #'winner-undo
+                   :desc "Redo window config"    "U" #'winner-redo
+                   :desc "Window left"           "h" #'windmove-left
+                   :desc "Window down"           "a" #'windmove-down
+                   :desc "Window up"             "e" #'windmove-up
+                   :desc "Window right"          "i" #'windmove-right
+                   :desc "Balance windows"       "=" #'balance-windows
+                   :desc "Enlarge window"        "+" #'enlarge-window
+                   :desc "Shrink window"         "-" #'shrink-window
+                   :desc "Widen window"          ">" #'enlarge-window-horizontally
+                   :desc "Narrow window"         "<" #'shrink-window-horizontally)
 
       ;; SPC TAB -> workspaces (like Evil)
       (:when (modulep! :ui workspaces)
-       (:prefix-map ("TAB" . "workspace")
-        :desc "Display workspaces"        "TAB" #'+workspace/display
-        :desc "Switch workspace"          "."   #'+workspace/switch-to
-        :desc "Switch to last workspace"  "`"   #'+workspace/other
-        :desc "New workspace"             "n"   #'+workspace/new
-        :desc "New named workspace"       "N"   #'+workspace/new-named
-        :desc "Load workspace"            "l"   #'+workspace/load
-        :desc "Save workspace"            "s"   #'+workspace/save
-        :desc "Kill workspace"            "d"   #'+workspace/kill
-        :desc "Delete saved workspace"    "D"   #'+workspace/delete
-        :desc "Rename workspace"          "r"   #'+workspace/rename
-        :desc "Restore last session"      "R"   #'+workspace/restore-last-session
-        :desc "Next workspace"            "]"   #'+workspace/switch-right
-        :desc "Previous workspace"        "["   #'+workspace/switch-left
-        :desc "Switch to 1st workspace"   "1"   #'+workspace/switch-to-0
-        :desc "Switch to 2nd workspace"   "2"   #'+workspace/switch-to-1
-        :desc "Switch to 3rd workspace"   "3"   #'+workspace/switch-to-2
-        :desc "Switch to 4th workspace"   "4"   #'+workspace/switch-to-3
-        :desc "Switch to 5th workspace"   "5"   #'+workspace/switch-to-4
-        :desc "Switch to 6th workspace"   "6"   #'+workspace/switch-to-5
-        :desc "Switch to 7th workspace"   "7"   #'+workspace/switch-to-6
-        :desc "Switch to 8th workspace"   "8"   #'+workspace/switch-to-7
-        :desc "Switch to 9th workspace"   "9"   #'+workspace/switch-to-8
-        :desc "Switch to final workspace" "0"   #'+workspace/switch-to-final)))
+             (:prefix-map ("TAB" . "workspace")
+                          :desc "Display workspaces"        "TAB" #'+workspace/display
+                          :desc "Switch workspace"          ","   #'+workspace/switch-to
+                          :desc "Switch to last workspace"  "h"   #'+workspace/other
+                          :desc "New workspace"             "n"   #'+workspace/new
+                          :desc "New named workspace"       "N"   #'+workspace/new-named
+                          :desc "Load workspace"            "l"   #'+workspace/load
+                          :desc "Save workspace"            "s"   #'+workspace/save
+                          :desc "Kill workspace"            "d"   #'+workspace/kill
+                          :desc "Delete saved workspace"    "D"   #'+workspace/delete
+                          :desc "Rename workspace"          "r"   #'+workspace/rename
+                          :desc "Restore last session"      "R"   #'+workspace/restore-last-session
+                          :desc "Next workspace"            "]"   #'+workspace/switch-right
+                          :desc "Previous workspace"        "["   #'+workspace/switch-left
+                          :desc "Switch to 1st workspace"   "1"   #'+workspace/switch-to-0
+                          :desc "Switch to 2nd workspace"   "2"   #'+workspace/switch-to-1
+                          :desc "Switch to 3rd workspace"   "3"   #'+workspace/switch-to-2
+                          :desc "Switch to 4th workspace"   "4"   #'+workspace/switch-to-3
+                          :desc "Switch to 5th workspace"   "5"   #'+workspace/switch-to-4
+                          :desc "Switch to 6th workspace"   "6"   #'+workspace/switch-to-5
+                          :desc "Switch to 7th workspace"   "7"   #'+workspace/switch-to-6
+                          :desc "Switch to 8th workspace"   "8"   #'+workspace/switch-to-7
+                          :desc "Switch to 9th workspace"   "9"   #'+workspace/switch-to-8
+                          :desc "Switch to final workspace" "0"   #'+workspace/switch-to-final)))
 
 ;; (setq doom-theme 'doom-tomorrow-night)
 ;; (setq doom-theme 'doom-feather-dark)
-(setq doom-theme 'catppuccin)
-(setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
+;; (setq doom-theme 'catppuccin)
+;; (setq catppuccin-flavor 'macchiato) ; or 'mocha, 'latte, 'frappe, 'macchiato
+(setq doom-theme 'rinde)
 ;; (setq doom-theme 'doom-matccha)
 
 (defun mq/get-font-size ()
@@ -67,6 +68,8 @@
 (setq doom-symbol-font (font-spec :family "Symbols Nerd Font Mono"))
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(set-popup-rule! "^\\*Async Shell Command\\*" :size 0.25 :quit t :select nil :ttl 5)
 
 (setq confirm-kill-emacs nil)
 
@@ -271,19 +274,7 @@
         "D" #'dape-disconnect-quit
         "q" #'dape-quit))
 
-(use-package! odin-ts-mode
-  :mode "\\.odin\\'")
-
-(add-hook 'odin-ts-mode-hook #'lsp-deferred)
-
-;; Custom colors for Odin mode to avoid red
-(defun my/odin-mode-colors ()
-  "Set custom colors for Odin mode."
-  (face-remap-add-relative 'font-lock-keyword-face :foreground (doom-color 'yellow))
-  (face-remap-add-relative 'font-lock-type-face :foreground (doom-color 'cyan))
-  (face-remap-add-relative 'font-lock-constant-face :foreground (doom-color 'magenta)))
-
-(add-hook 'odin-ts-mode-hook #'my/odin-mode-colors)
+(set-formatter! 'odinfmt '("odinfmt" "-stdin") :modes '(odin-mode odin-ts-mode))
 
 (setq gdscript-godot-executable "/Applications/Godot.app/Contents/MacOS/Godot")
 
@@ -297,6 +288,13 @@
 ;; producing false "unresolved reference" errors on every import
 (after! lsp-mode
   (setq lsp-diagnostics-disabled-modes '(kotlin-mode)))
+
+(defun mq/project-type ()
+  "Return 'flutter, 'android, or 'odin based on project markers."
+  (cond
+   ((locate-dominating-file default-directory "pubspec.yaml") 'flutter)
+   ((locate-dominating-file default-directory "gradlew") 'android)
+   ((locate-dominating-file default-directory "scripts/build_hot_reload.sh") 'odin)))
 
 (defvar mq/android-home (or (getenv "ANDROID_HOME")
                             (expand-file-name "~/Library/Android/sdk"))
@@ -324,7 +322,8 @@
 
 (defun mq/android-run ()
   "Launch the app on connected device/emulator.
-Auto-detects package from build.gradle.kts and launcher activity from AndroidManifest.xml."
+Auto-detects package from build.gradle.kts and launcher activity from AndroidManifest.xml.
+Runs in the background without popping up an output window."
   (interactive)
   (let* ((root (or (locate-dominating-file default-directory "gradlew")
                    (error "Cannot find project root (no gradlew found)")))
@@ -340,9 +339,29 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
                      (if (re-search-forward
                           "<activity[^>]*android:name=\"\\([^\"]+\\)\"\\(?:.\\|\n\\)*?LAUNCHER" nil t)
                          (match-string 1)
-                       ".MainActivity"))))
-    (async-shell-command
-     (format "%s shell am start -n %s/%s%s" mq/adb package package activity))))
+                       ".MainActivity")))
+         (cmd (format "%s shell am start -S -n %s/%s%s" mq/adb package package activity))
+         ;; Leading space keeps the buffer out of the buffer list.
+         (buf (generate-new-buffer " *android-run*"))
+         (proc (start-process-shell-command "android-run" buf cmd)))
+    (message "Launching %s/%s%s..." package package activity)
+    (set-process-sentinel
+     proc
+     (lambda (p _event)
+       (when (memq (process-status p) '(exit signal))
+         (let ((b (process-buffer p)))
+           (when (buffer-live-p b)
+             (let ((output (with-current-buffer b
+                             (string-trim (buffer-string)))))
+               (kill-buffer b)
+               (if (zerop (process-exit-status p))
+                   (message "Android app launched.")
+                 (message "Android launch failed: %s" output))))))))))
+
+(defun mq/android-devices ()
+  "Show connected Android devices."
+  (interactive)
+  (message "%s" (string-trim (shell-command-to-string (format "%s devices" mq/adb)))))
 
 (defun mq/logcat (&optional filter)
   "Open logcat in a buffer. Optionally FILTER by tag."
@@ -374,14 +393,171 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
       (kill-buffer b)))
   (message "Logcat stopped"))
 
+(defun mq/flutter-root ()
+  "Find the Flutter project root (directory containing pubspec.yaml)."
+  (or (locate-dominating-file default-directory "pubspec.yaml")
+      (error "Cannot find project root (no pubspec.yaml found)")))
+
+(defun mq/flutter-run ()
+  "Run the Flutter app in a compilation buffer."
+  (interactive)
+  (let ((default-directory (mq/flutter-root)))
+    (compile "flutter run")))
+
+(defun mq/flutter-build ()
+  "Build the Flutter app. Prompts for target platform."
+  (interactive)
+  (let* ((default-directory (mq/flutter-root))
+         (target (completing-read "Build target: " '("apk" "ios" "web" "macos") nil t)))
+    (compile (format "flutter build %s" target))))
+
+(defun mq/flutter-emulator ()
+  "Launch a Flutter emulator."
+  (interactive)
+  (let* ((output (shell-command-to-string "flutter emulators"))
+         (lines (split-string output "\n" t))
+         (ids (cl-loop for l in lines
+                       when (string-match "^\\([^ ]+\\)" l)
+                       collect (match-string 1 l)))
+         (choice (completing-read "Emulator: " ids nil t)))
+    (start-process "flutter-emulator" "*flutter-emulator*" "flutter" "emulators" "--launch" choice)))
+
+(defun mq/flutter-devices ()
+  "Show connected Flutter devices."
+  (interactive)
+  (message "%s" (string-trim (shell-command-to-string "flutter devices"))))
+
+(defun mq/flutter-logs ()
+  "Stream Flutter logs in a buffer."
+  (interactive)
+  (let ((buf "*flutter-logs*")
+        (default-directory (mq/flutter-root)))
+    (when (get-buffer buf) (kill-buffer buf))
+    (async-shell-command "flutter logs" buf)))
+
+(defun mq/flutter-logs-stop ()
+  "Kill Flutter log buffer."
+  (interactive)
+  (when-let ((b (get-buffer "*flutter-logs*")))
+    (kill-buffer b))
+  (message "Flutter logs stopped"))
+
+(defun mq/flutter-uot-restart ()
+  "Send hot restart (R) to a running `flutter run' compilation buffer."
+  (interactive)
+  (if-let ((buf (get-buffer "*compilation*")))
+      (with-current-buffer buf
+        (when-let ((proc (get-buffer-process buf)))
+          (process-send-string proc "R")
+          (message "Hot restart sent")))
+    (message "No flutter run process found")))
+
+(defvar mq/--odin-pending-launch nil
+  "Project root awaiting game launch after build, or nil.")
+
+(defun mq/--odin-launch-after-build (_buf msg)
+  "Launch the Odin game executable after a successful build."
+  (remove-hook 'compilation-finish-functions #'mq/--odin-launch-after-build)
+  (when-let ((root mq/--odin-pending-launch))
+    (setq mq/--odin-pending-launch nil)
+    (when (string-match-p "finished" msg)
+      (let* ((exe (expand-file-name "game_hot_reload.bin" root))
+             (default-directory root)
+             (proc (start-process "odin-game" "*odin-game*" exe)))
+        (set-process-query-on-exit-flag proc nil)
+        (message "Launched %s" exe)))))
+
+(defun mq/odin-run ()
+  "Build and run the Odin hot-reload project."
+  (interactive)
+  (let* ((root (locate-dominating-file default-directory "scripts/build_hot_reload.sh"))
+         (default-directory root))
+    (if (= 0 (call-process "pgrep" nil nil nil "-f" "game_hot_reload.bin"))
+        ;; Game is running — just rebuild DLL for hot reload
+        (compile "./scripts/build_hot_reload.sh")
+      ;; Full build, then launch via start-process after compilation
+      (setq mq/--odin-pending-launch root)
+      (add-hook 'compilation-finish-functions #'mq/--odin-launch-after-build)
+      (compile "./scripts/build_hot_reload.sh"))))
+
+(defun mq/odin-build ()
+  "Build the Odin hot-reload DLL."
+  (interactive)
+  (let ((default-directory (locate-dominating-file default-directory "scripts/build_hot_reload.sh")))
+    (compile "./scripts/build_hot_reload.sh")))
+
+(defun mq/mobile-run ()
+  "Run app, dispatching based on project type."
+  (interactive)
+  (pcase (mq/project-type)
+    ('flutter (mq/flutter-run))
+    ('android (mq/android-run))
+    ('odin (mq/odin-run))
+    (_ (user-error "Not in a recognized project (Flutter/Android/Odin)"))))
+
+(defun mq/mobile-build ()
+  "Build app, dispatching based on project type."
+  (interactive)
+  (pcase (mq/project-type)
+    ('flutter (mq/flutter-build))
+    ('android (mq/android-build-install))
+    ('odin (mq/odin-build))
+    (_ (user-error "Not in a recognized project (Flutter/Android/Odin)"))))
+
+(defun mq/mobile-emulator ()
+  "Launch emulator, dispatching to Android or Flutter based on project type."
+  (interactive)
+  (pcase (mq/project-type)
+    ('flutter (mq/flutter-emulator))
+    ('android (mq/android-emulator))
+    (_ (user-error "Not in a Flutter or Android project"))))
+
+(defun mq/mobile-devices ()
+  "Show devices, dispatching to Android or Flutter based on project type."
+  (interactive)
+  (pcase (mq/project-type)
+    ('flutter (mq/flutter-devices))
+    ('android (mq/android-devices))
+    (_ (user-error "Not in a Flutter or Android project"))))
+
+(defun mq/mobile-logs ()
+  "Stream logs, dispatching to Android or Flutter based on project type."
+  (interactive)
+  (pcase (mq/project-type)
+    ('flutter (mq/flutter-logs))
+    ('android (mq/logcat))
+    (_ (user-error "Not in a Flutter or Android project"))))
+
+(defun mq/mobile-logs-stop ()
+  "Stop logs, dispatching to Android or Flutter based on project type."
+  (interactive)
+  (pcase (mq/project-type)
+    ('flutter (mq/flutter-logs-stop))
+    ('android (mq/logcat-stop))
+    (_ (user-error "Not in a Flutter or Android project"))))
+
 (map! :leader
-      (:prefix ("r" . "android")
-       :desc "Emulator"       "e" #'mq/android-emulator
-       :desc "Build & install" "b" #'mq/android-build-install
-       :desc "Run app"        "r" #'mq/android-run
-       :desc "Logcat"         "l" #'mq/logcat
-       :desc "Logcat (app)"   "a" #'mq/logcat-app
-       :desc "Logcat stop"    "k" #'mq/logcat-stop))
+      (:prefix ("r" . "run/mobile")
+       :desc "Run app"        "r" #'mq/mobile-run
+       :desc "Build"          "b" #'mq/mobile-build
+       :desc "Emulator"       "e" #'mq/mobile-emulator
+       :desc "Devices"        "d" #'mq/mobile-devices
+       :desc "Logs"           "l" #'mq/mobile-logs
+       :desc "Logs stop"      "k" #'mq/mobile-logs-stop
+       :desc "Hot restart"    "R" #'mq/flutter-hot-restart
+       :desc "Logcat (app)"   "a" #'mq/logcat-app))
+
+(defun mq/auto-close-compilation-on-success (buf msg)
+  "Close compilation window after success, keep it on failure."
+  (when (and (string-match-p "finished" msg)
+             (not (string-match-p "abnormally\\|exited" msg)))
+    (run-at-time 1 nil
+                 (lambda (buf)
+                   (when-let ((win (get-buffer-window buf t)))
+                     (delete-window win)))
+                 buf)))
+
+(add-hook 'compilation-finish-functions #'mq/auto-close-compilation-on-success)
 
 (setq shell-file-name (executable-find "bash"))
 (setq-default vterm-shell "/opt/homebrew/bin/fish")
@@ -421,7 +597,8 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
 
 (add-to-list 'exec-path "/Users/marcin/.local/bin")
 
-(map! :leader :desc "Open Dired" "e" #'dired-jump)
+(map! :leader :desc "Find file in project" "SPC" #'projectile-find-file)
+(map! :leader :desc "Open Dired" "E" #'dired-jump)
 (map! :leader :desc "Open nvim" "o n" 'mq/ghostty-nvim-current-dir)
 (map! :leader :desc "Comment line" "-" #'comment-line)
 (map! :n "]P" #'forward-page
@@ -541,6 +718,78 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
         (?l . line)
         (?b . buffer)))
 
+;; Auto-install tree-sitter grammars when a ts-mode needs one.
+(setq treesit-auto-install-grammar 'always)
+
+(use-package! meow-tree-sitter
+  :after meow
+  :config
+  (meow-tree-sitter-register-defaults)
+
+  ;; Return nil in buffers without a tree-sitter parser or with missing/broken
+  ;; queries instead of erroring, so fallbacks below can take over.
+  (advice-add 'meow-tree-sitter--select-thing :around
+              (lambda (orig-fn &rest args)
+                (ignore-errors
+                  (when (treesit-buffer-root-node)
+                    (apply orig-fn args)))))
+
+  ;; Save the original tree-sitter things for fallback wrappers below.
+  (defvar mq/--ts-function-thing (plist-get meow--thing-registry 'function))
+  (defvar mq/--ts-comment-thing (plist-get meow--thing-registry 'comment))
+  (defvar mq/--ts-class-thing (plist-get meow--thing-registry 'class))
+
+  ;; For ?f, fall back to defun bounds in non-tree-sitter buffers (e.g. emacs-lisp).
+  (meow--thing-register 'function
+    (lambda ()
+      (or (when-let ((fn (car mq/--ts-function-thing)))
+            (funcall fn))
+          (bounds-of-thing-at-point 'defun)))
+    (lambda ()
+      (or (when-let ((fn (cdr mq/--ts-function-thing)))
+            (funcall fn))
+          (bounds-of-thing-at-point 'defun))))
+
+  ;; For ?/, fall back to matching font-lock comments in non-tree-sitter buffers.
+  (meow--thing-register 'comment
+    (lambda ()
+      (or (when-let ((fn (car mq/--ts-comment-thing)))
+            (funcall fn))
+          (when-let ((ppss (syntax-ppss)))
+            (when (nth 4 ppss)
+              (let ((beg (nth 8 ppss)))
+                (save-excursion
+                  (goto-char beg)
+                  (forward-comment 1)
+                  (cons beg (point))))))))
+    (lambda ()
+      (or (when-let ((fn (cdr mq/--ts-comment-thing)))
+            (funcall fn))
+          (when-let ((ppss (syntax-ppss)))
+            (when (nth 4 ppss)
+              (let ((beg (nth 8 ppss)))
+                (save-excursion
+                  (goto-char beg)
+                  (forward-comment 1)
+                  (cons beg (point)))))))))
+
+  ;; For ?a (class), fall back to top-level defun in non-tree-sitter buffers.
+  (meow--thing-register 'class
+    (lambda ()
+      (or (when-let ((fn (car mq/--ts-class-thing)))
+            (funcall fn))
+          (save-excursion
+            (let ((beg (progn (beginning-of-defun) (point)))
+                  (end (progn (end-of-defun) (point))))
+              (cons beg end)))))
+    (lambda ()
+      (or (when-let ((fn (cdr mq/--ts-class-thing)))
+            (funcall fn))
+          (save-excursion
+            (let ((beg (progn (beginning-of-defun) (point)))
+                  (end (progn (end-of-defun) (point))))
+              (cons beg end)))))))
+
 (custom-set-faces!
   ;;   `(font-lock-function-name-face :foreground ,(doom-color 'aqua) :weight bold)
   `(font-lock-function-call-face :foreground ,(doom-color 'teal))
@@ -575,6 +824,9 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
 
 ) ;; end (unless (modulep! :editor evil) ...)
 
+(after! doom-modeline
+  (setq doom-modeline-buffer-file-name-style 'file-name-with-project))
+
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
   :bind (:map copilot-completion-map
@@ -589,7 +841,9 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
   (add-to-list 'copilot-indentation-alist '(prog-mode 2))
   (add-to-list 'copilot-indentation-alist '(org-mode 2))
   (add-to-list 'copilot-indentation-alist '(text-mode 2))
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
+  (add-to-list 'copilot-indentation-alist '(odin-mode 4))
+  (add-to-list 'copilot-indentation-alist '(odin-ts-mode 4)))
 
 (use-package! claude-code-ide
   :init
@@ -599,7 +853,7 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
   :config
   (claude-code-ide-emacs-tools-setup)
   (map! :leader
-        (:prefix ("L" . "claude-code")
+        (:prefix ("A" . "claude-code")
          :desc "Menu"             "l" #'claude-code-ide-menu
          :desc "Start session"    "s" #'claude-code-ide
          :desc "Resume session"   "r" #'claude-code-ide-resume
@@ -611,6 +865,32 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
          :desc "Stop session"     "q" #'claude-code-ide-stop
          :desc "List sessions"    "L" #'claude-code-ide-list-sessions
          :desc "Send escape"      "e" #'claude-code-ide-send-escape)))
+
+;; the below code is not working, Claude Code overrides the cursor
+  ;; but I'm leaving it for a while as it is probably fixeng double cursor problem
+
+  ;; Enforce Meow cursor shape in Claude Code IDE buffers.
+  ;; vterm's C module overrides cursor-type via DECSCUSR escape sequences,
+  ;; process filters, and timer callbacks — all asynchronously.
+  ;; pre-redisplay-functions is the most robust hook: it fires right before
+  ;; every redisplay, catching any cursor-type change regardless of source.
+
+  ;; (defun +claude-code-enforce-meow-cursor-pre-redisplay (_window)
+  ;;   "Re-apply Meow's cursor-type before redisplay if vterm has overridden it."
+  ;;   (when (bound-and-true-p meow-mode)
+  ;;     (let ((desired (cond ((meow-insert-mode-p) meow-cursor-type-insert)
+  ;;                          ((meow-normal-mode-p) meow-cursor-type-normal)
+  ;;                          ((meow-motion-mode-p) meow-cursor-type-normal)
+  ;;                          ((meow-beacon-mode-p) meow-cursor-type-beacon)
+  ;;                          (t meow-cursor-type-default))))
+  ;;       (unless (equal cursor-type desired)
+  ;;         (setq cursor-type desired)))))
+
+  ;; (defadvice! +claude-code-meow-cursor-a (&rest _)
+  ;;   :after #'claude-code-ide--configure-vterm-buffer
+  ;;   (when (bound-and-true-p meow-mode)
+  ;;     (setq-local cursor-type (if (meow-insert-mode-p) meow-cursor-type-insert meow-cursor-type-normal))
+  ;;     (add-hook 'pre-redisplay-functions #'+claude-code-enforce-meow-cursor-pre-redisplay nil t))))
 
 ;; (dolist (range '((#x23FA . #x23FA)   ; bullet
                  ;; (#x2700 . #x27BF)   ; Dingbats (spinner chars)
@@ -681,12 +961,13 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
       mu4e-sent-folder   "/gmail/[Gmail]/Wysłane"
       mu4e-drafts-folder "/gmail/[Gmail]/Wersje robocze"
       mu4e-trash-folder  "/gmail/[Gmail]/Kosz"
-      mu4e-refile-folder "/gmail/[Gmail]/Kosz")
+      mu4e-refile-folder "/gmail/[Gmail]/Wszystkie")
 
 (after! mu4e
- (setq mu4e-view-prefer-html nil)
-   (setq shr-color-visible-luminance-min 80)
-  (setq shr-color-visible-distance-min 5)   
+  ;; Prefer text/plain over text/html
+  (setq mm-discouraged-alternatives '("text/html" "text/richtext"))
+  (setq shr-color-visible-luminance-min 80)
+  (setq shr-color-visible-distance-min 5)
   (setq mu4e-update-interval 300              ; sync every 5 minutes
         mu4e-get-mail-command "mbsync -a"
         mu4e-change-filenames-when-moving t    ; required for mbsync
@@ -723,7 +1004,12 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
 
         ;; User info
         user-mail-address "marcin.kuder@gmail.com"
-        user-full-name "Marcin Kuder"))
+        user-full-name "Marcin Kuder")
+
+  ;; Add Inbox at the top of bookmarks
+  (add-to-list 'mu4e-bookmarks
+               '(:name "Inbox" :query "maildir:/gmail/INBOX" :key ?i)
+               nil))
 
 ;; Disable meow expand hints (runs after everything is loaded)
 ;; (add-hook 'emacs-startup-hook
@@ -735,10 +1021,27 @@ Auto-detects package from build.gradle.kts and launcher activity from AndroidMan
   (dirvish-quick-access-entries
         '(("h" "~/"              "Home")
           ("p" "~/proj/"         "Projects")
-          ("d" "~/Downloads/"    "Downloads")
+          ("d" "~/Downloads/"    "Downloas")
           ("n" "~/notes/"        "Notes"))))
+
+(map! :leader
+      :desc "Open Dirvish" "e" #'dirvish)
 
 (map! :map dirvish-mode-map
       "TAB" #'dirvish-subtree-toggle
       "i" #'dired-find-file
       "h" #'dired-up-directory)
+
+(after! dired
+  (defun my/dired-jump-to-top ()
+    (interactive)
+    (goto-char (point-min))
+    (dired-next-line 0))
+  
+  (defun my/dired-jump-to-bottom ()
+    (interactive)
+    (goto-char (point-max))
+    (dired-previous-line 1))
+
+  (define-key dired-mode-map (kbd "{") #'my/dired-jump-to-top)
+  (define-key dired-mode-map (kbd "}") #'my/dired-jump-to-bottom))

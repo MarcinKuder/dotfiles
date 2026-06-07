@@ -51,8 +51,8 @@
 ;; (package! odin-mode
 ;;   :recipe (:host github :repo "mattt-b/odin-mode"))
 
-(package! odin-ts-mode
-  :recipe (:host github :repo "Sampie159/odin-ts-mode"))
+;; (package! odin-ts-mode
+;; :recipe (:host github :repo "Sampie159/odin-ts-mode"))
 
 ;; (package! odin-mode :recipe (:host srht :repo "mgmarlow/odin-mode"))
 
@@ -96,4 +96,8 @@
 
 ;; Android / Kotlin
 (package! groovy-mode)  ; Gradle build files
+
+(package! meow-tree-sitter
+  :recipe (:host github :repo "skissue/meow-tree-sitter"
+           :files ("*.el" "queries")))
 

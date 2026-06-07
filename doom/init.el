@@ -122,7 +122,7 @@
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
        ;;data              ; config/data formats
-       (dart +flutter)   ; paint ui and not much else
+       (dart +flutter +tree-sitter) ; paint ui and not much else
        ;;dhall
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
@@ -134,18 +134,18 @@
        ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
-       (gdscript +lsp)          ; the language you waited for
-       (go +lsp)         ; the hipster dialect
+       (gdscript +lsp +tree-sitter) ; the language you waited for
+       (go +lsp +tree-sitter) ; the hipster dialect
        ;;(graphql +lsp)    ; Give queries a REST
        ;;(haskell +lsp)    ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
        ;;janet             ; Fun fact: Janet is me!
-       (java +lsp)       ; the poster child for carpal tunnel syndrome
+       (java +lsp +tree-sitter) ; the poster child for carpal tunnel syndrome
        (javascript +tree-sitter) ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
-       (kotlin +lsp)     ; a better, slicker Java(Script)
+       (kotlin +lsp +tree-sitter) ; a better, slicker Java(Script)
        latex             ; writing papers in Emacs has never been so fun
        ;;lean              ; for folks with too much to prove
        ;;ledger            ; be audit you can be
@@ -154,6 +154,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
+       odin              ; C, minus its footguns
        ;; org               ; organize your plain life in plain text
        (org +present +dragndrop +hugo +journal +pandoc)
        ;;php               ; perl's insecure younger brother
@@ -178,7 +179,7 @@
        ;;terra             ; Earth and Moon in alignment for performance.
        web               ; the tubes
        yaml              ; JSON, but readable
-       (zig +lsp)               ; C, but simpler
+       (zig +lsp +tree-sitter)  ; C, but simpler
 
        :email
        (mu4e +org +gmail)
