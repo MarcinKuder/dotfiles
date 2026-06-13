@@ -3,6 +3,11 @@
 # For a (much) more advanced configuration example see my dotfiles:
 # https://github.com/FelixKratz/dotfiles
 
+# SketchyBar is launched by launchd with a minimal PATH that lacks
+# /opt/homebrew/bin, so `aerospace` (and other brew tools) aren't found.
+# Child plugin scripts inherit this PATH too.
+export PATH="/opt/homebrew/bin:$PATH"
+
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 
 ##### Bar Appearance #####
