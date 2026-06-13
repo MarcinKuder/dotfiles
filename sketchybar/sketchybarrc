@@ -32,10 +32,16 @@ default=( padding_left=5 padding_right=5 icon.font="VictorMono Nerd Font:Semibol
 # Aerospace
 sketchybar --add event aerospace_workspace_change
 for sid in $(aerospace list-workspaces --all); do
+  # Display Gallium home-row keys instead of the numeric workspace ids.
+  case "$sid" in
+    1) space_icon=H ;; 2) space_icon=A ;; 3) space_icon=E ;; 4) space_icon=I ;;
+    5) space_icon=F ;; 6) space_icon=O ;; 7) space_icon=U ;; 8) space_icon=";" ;;
+    *) space_icon="$sid" ;;
+  esac
   sketchybar --add item space.$sid left \
     --subscribe space.$sid aerospace_workspace_change front_app_switched \
     --set space.$sid \
-    icon="$sid" \
+    icon="$space_icon" \
     icon.padding_left=8 \
     icon.padding_right=8 \
     label.padding_left=0 \
