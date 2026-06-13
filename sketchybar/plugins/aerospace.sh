@@ -8,6 +8,7 @@ source "$CONFIG_DIR/plugins/icon_map.sh"
 SID="$1"
 OCCUPIED_COLOR=0xfff0f0f0
 EMPTY_COLOR=0xff585858
+APP_ICON_COLOR=0xff86905d  # rinde earthy green — distinct from the workspace letters
 
 FOCUSED_SID="${FOCUSED_WORKSPACE:-$FOCUSED}"
 if [ -z "$FOCUSED_SID" ]; then
@@ -36,6 +37,7 @@ if [ -n "$apps" ]; then
     icon.padding_left=8 \
     icon.padding_right=8 \
     label.padding_right=8 \
+    label.color=$APP_ICON_COLOR \
     icon.color=$OCCUPIED_COLOR
 else
   sketchybar --set "$NAME" \
