@@ -10,18 +10,24 @@ OCCUPIED_COLOR=0xfff0f0f0
 EMPTY_COLOR=0xff585858
 APP_ICON_COLOR=0xff86905d  # rinde earthy green — distinct from the workspace letters
 
-FOCUSED_SID="${FOCUSED_WORKSPACE:-$FOCUSED}"
-if [ -z "$FOCUSED_SID" ]; then
-  FOCUSED_SID="$(aerospace list-workspaces --focused)"
-fi
-
 FOCUSED_BG=0xff393925
 UNFOCUSED_BG=0x40393925
 
-if [ "$SID" = "$FOCUSED_SID" ]; then
-  sketchybar --set "$NAME" background.color=$FOCUSED_BG
-else
-  sketchybar --set "$NAME" background.color=$UNFOCUSED_BG
+# The focus background only changes on a workspace switch, so we skip the
+# focused-workspace lookup entirely on front_app_switched. That avoids an
+# `aerospace list-workspaces --focused` spawn per space on every app switch.
+if [ "$SENDER" != "front_app_switched" ]; then
+  FOCUSED_SID="${FOCUSED_WORKSPACE:-$FOCUSED}"
+  if [ -z "$FOCUSED_SID" ]; then
+    # Only hit on the initial --update; afterwards FOCUSED is passed by the trigger.
+    FOCUSED_SID="$(aerospace list-workspaces --focused)"
+  fi
+
+  if [ "$SID" = "$FOCUSED_SID" ]; then
+    sketchybar --set "$NAME" background.color=$FOCUSED_BG
+  else
+    sketchybar --set "$NAME" background.color=$UNFOCUSED_BG
+  fi
 fi
 
 apps=$(aerospace list-windows --workspace "$SID" --format "%{app-name}")

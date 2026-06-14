@@ -15,7 +15,7 @@ after-startup-command = [
 ]
 
 # Start AeroSpace at login
-start-at-login = false
+start-at-login = true
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -42,7 +42,8 @@ default-root-container-orientation = 'auto'
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Mouse follows focus when focused window changes
-on-focus-changed = ['move-mouse window-lazy-center']
+# Disabled: re-centering the cursor on every keyboard focus change is jarring.
+# on-focus-changed = ['move-mouse window-lazy-center']
 
 # You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
@@ -113,78 +114,97 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     # end tell'
     # '''
 
-    # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-    cmd-alt-space = 'layout tiles horizontal vertical'
-    cmd-alt-enter = 'layout accordion horizontal vertical'
+    # Meh reaches AeroSpace as ⌘⌥⇧ (firmware sends ⌥⇧⌃, then ⌃ is swapped to ⌘).
+    # One Voyager key — hold it, tap a nav key. "Move" adds ⌃ (left pinky = n)
+    # → full hyper ⌘⌥⇧⌃. ⌘⌥⇧ is super-meta-shift in Emacs (unbound); it shares
+    # Tuna's ⌘⌥⇧ family, so the bound keys steer clear of Tuna's D/V/M/Space.
 
-    # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-    cmd-alt-h = 'focus left --boundaries all-monitors-outer-frame'
-    cmd-alt-a = 'focus down'
-    cmd-alt-e = 'focus up'
-    cmd-alt-i = 'focus right --boundaries all-monitors-outer-frame'
+    # ── Focus (hold Meh, tap h/a/e/i)
+    cmd-alt-shift-h = 'focus left --boundaries all-monitors-outer-frame'
+    cmd-alt-shift-a = 'focus down'
+    cmd-alt-shift-e = 'focus up'
+    cmd-alt-shift-i = 'focus right --boundaries all-monitors-outer-frame'
 
-    # See: https://nikitabobko.github.io/AeroSpace/commands#move
-    cmd-alt-shift-h = 'move left --boundaries all-monitors-outer-frame'
-    cmd-alt-shift-a = 'move down'
-    cmd-alt-shift-e = 'move up'
-    cmd-alt-shift-i = 'move right --boundaries all-monitors-outer-frame'
+    # ── Move window (Meh+Ctrl → add n)
+    cmd-alt-shift-ctrl-h = 'move left --boundaries all-monitors-outer-frame'
+    cmd-alt-shift-ctrl-a = 'move down'
+    cmd-alt-shift-ctrl-e = 'move up'
+    cmd-alt-shift-ctrl-i = 'move right --boundaries all-monitors-outer-frame'
 
-    # See: https://nikitabobko.github.io/AeroSpace/commands#resize
-    cmd-alt-shift-o = 'resize smart -50'
-    cmd-alt-shift-u = 'resize smart +50'
-
-    # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-    cmd-alt-ctrl-h = 'workspace 1'
-    cmd-alt-ctrl-a = 'workspace 2'
-    cmd-alt-ctrl-e = 'workspace 3'
-    cmd-alt-ctrl-i = 'workspace 4'
-    cmd-alt-ctrl-f = 'workspace 5'
-    cmd-alt-ctrl-o = 'workspace 6'
-    cmd-alt-ctrl-u = 'workspace 7'
-    cmd-alt-ctrl-semicolon = 'workspace 8'
-
-    # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
-    cmd-alt-shift-ctrl-h = 'move-node-to-workspace --focus-follows-window 1'
-    cmd-alt-shift-ctrl-a = 'move-node-to-workspace --focus-follows-window 2'
-    cmd-alt-shift-ctrl-e = 'move-node-to-workspace --focus-follows-window 3'
-    cmd-alt-shift-ctrl-i = 'move-node-to-workspace --focus-follows-window 4'
-    cmd-alt-shift-ctrl-f = 'move-node-to-workspace --focus-follows-window 5'
-    cmd-alt-shift-ctrl-o = 'move-node-to-workspace --focus-follows-window 6'
-    cmd-alt-shift-ctrl-u = 'move-node-to-workspace --focus-follows-window 7'
-    cmd-alt-shift-ctrl-semicolon = 'move-node-to-workspace --focus-follows-window 8'
-
-    # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
-    cmd-alt-shift-comma = 'workspace-back-and-forth'
-    # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-    cmd-alt-shift-ctrl-y = 'move-workspace-to-monitor --wrap-around next'
-
-    # See: https://nikitabobko.github.io/AeroSpace/commands#mode
-    cmd-alt-shift-semicolon = 'mode service'
-
-    cmd-alt-shift-w = 'layout floating tiling'
-
+    # ── Last-window toggle (⌘` = hold t, tap backtick)
     cmd-backtick = 'focus-back-and-forth'
-    cmd-alt-shift-z = 'balance-sizes'
-    
-# 'service' binding mode declaration.
+
+    # ── Cycle workspaces (Meh ' = prev, Meh / = next; wraps at the ends)
+    cmd-alt-shift-quote = 'workspace --wrap-around --no-stdin prev'
+    cmd-alt-shift-slash = 'workspace --wrap-around --no-stdin next'
+
+    # ── Send window to prev/next workspace + follow (Meh+Ctrl ' or /)
+    # --no-stdin is required for next/prev since AeroSpace v0.20.0.
+    cmd-alt-shift-ctrl-quote = 'move-node-to-workspace --wrap-around --no-stdin --focus-follows-window prev'
+    cmd-alt-shift-ctrl-slash = 'move-node-to-workspace --wrap-around --no-stdin --focus-follows-window next'
+
+    # ── Leader: enter the window menu, then press single keys (esc to exit).
+    # Entering lights up the Sketchybar "WINDOW" badge.
+    cmd-alt-shift-enter = ['mode window', 'exec-and-forget sketchybar --set window_mode drawing=on popup.drawing=on']
+
+# 'window' binding mode — tap Meh+↩, then single keys. No held chords here.
+# Every path back to main also hides the badge (drawing=off). Sticky actions
+# (t/c/-/=) keep you in the mode, so the badge stays lit until you exit.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
-[mode.service.binding]
-    esc = ['reload-config', 'mode main']
-    r = ['flatten-workspace-tree', 'mode main'] # reset layout
-    f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
-    backspace = ['close-all-windows-but-current', 'mode main']
+[mode.window.binding]
+    esc = ['mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
 
-    # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
-    #s = ['layout sticky tiling', 'mode main']
+    # Switch workspace — letters match the Sketchybar labels (H A E I F O U ;)
+    h = ['workspace 1', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    a = ['workspace 2', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    e = ['workspace 3', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    i = ['workspace 4', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    f = ['workspace 5', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    o = ['workspace 6', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    u = ['workspace 7', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    semicolon = ['workspace 8', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
 
-    cmd-alt-shift-c = ['join-with left', 'mode main']
-    cmd-alt-shift-a = ['join-with down', 'mode main']
-    cmd-alt-shift-e = ['join-with up', 'mode main']
-    cmd-alt-shift-i = ['join-with right', 'mode main']
+    # Send focused window to workspace + follow it (⇧ + same letter)
+    shift-h = ['move-node-to-workspace --focus-follows-window 1', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-a = ['move-node-to-workspace --focus-follows-window 2', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-e = ['move-node-to-workspace --focus-follows-window 3', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-i = ['move-node-to-workspace --focus-follows-window 4', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-f = ['move-node-to-workspace --focus-follows-window 5', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-o = ['move-node-to-workspace --focus-follows-window 6', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-u = ['move-node-to-workspace --focus-follows-window 7', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    shift-semicolon = ['move-node-to-workspace --focus-follows-window 8', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
 
-    # down = 'volume down'
-    # up = 'volume up'
-    # shift-down = ['volume set 0', 'mode main']
+    # Layout
+    t = 'layout tiles horizontal vertical'        # Tiles (stays in mode)
+    c = 'layout accordion horizontal vertical'    # aCcordion (stays in mode)
+    w = ['layout floating tiling', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']   # toggle float
+    enter = ['fullscreen', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']           # Meh+↩ then ↩ = fullscreen
+
+    # Sizing — no auto-return, so you can repeat: - - -  or  = = =
+    minus = 'resize smart -50'
+    equal = 'resize smart +50'
+    b = ['balance-sizes', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+
+    # Merge with neighbour
+    left  = ['join-with left',  'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    right = ['join-with right', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+
+    # Fix-ups & monitors
+    r = ['flatten-workspace-tree', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']            # reset tree
+    backspace = ['close-all-windows-but-current', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    y = ['move-workspace-to-monitor --wrap-around next', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    tab = ['workspace-back-and-forth', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
+    q = ['reload-config', 'mode main', 'exec-and-forget sketchybar --set window_mode drawing=off popup.drawing=off']
 [[on-window-detected]]
     if.app-id = 'org.godotengine.godot'
     run = 'layout floating'
+
+# Emacs / emacsclient (same bundle id) -> workspace 1
+[[on-window-detected]]
+    if.app-id = 'org.gnu.Emacs'
+    run = 'move-node-to-workspace 1'
+
+# Zen browser -> workspace 2
+[[on-window-detected]]
+    if.app-id = 'app.zen-browser.zen'
+    run = 'move-node-to-workspace 2'

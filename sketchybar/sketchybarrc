@@ -17,7 +17,7 @@ PLUGIN_DIR="$CONFIG_DIR/plugins"
 # If you are looking for other colors, see the color picker:
 # https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
 
-sketchybar --bar position=top height=36 blur_radius=30 color=0xd0101010
+sketchybar --bar position=top height=36 blur_radius=30 color=0xd0101010 notch_width=200
 
 ##### Changing Defaults #####
 # We now change some default values, which are applied to all further items.
@@ -28,6 +28,12 @@ default=( padding_left=5 padding_right=5 icon.font="VictorMono Nerd Font:Semibol
   icon.color=0xffc6c6c6 label.color=0xffc6c6c6 icon.padding_left=4
   icon.padding_right=4 label.padding_left=4 label.padding_right=4 )
   sketchybar --default "${default[@]}"
+
+# Shared "pill" background reused by the workspace items and the right-side
+# status items. Edit the look in one place.
+pill=( background.color=0x40393925 background.corner_radius=4
+  background.height=24 background.padding_left=3 background.padding_right=3
+  background.drawing=on )
 
 # Aerospace
 sketchybar --add event aerospace_workspace_change
@@ -41,6 +47,7 @@ for sid in $(aerospace list-workspaces --all); do
   sketchybar --add item space.$sid left \
     --subscribe space.$sid aerospace_workspace_change front_app_switched \
     --set space.$sid \
+    "${pill[@]}" \
     icon="$space_icon" \
     icon.padding_left=8 \
     icon.padding_right=8 \
@@ -48,12 +55,6 @@ for sid in $(aerospace list-workspaces --all); do
     label.padding_right=8 \
     label.font="sketchybar-app-font:Regular:14.0" \
     label.y_offset=-2 \
-    background.padding_left=3 \
-    background.padding_right=3 \
-    background.color=0x40393925 \
-    background.corner_radius=4 \
-    background.height=24 \
-    background.drawing=on \
     label="" \
     click_script="aerospace workspace $sid" \
     script="$CONFIG_DIR/plugins/aerospace.sh $sid"
@@ -66,8 +67,54 @@ done
 sketchybar --add item chevron left \
            --set chevron icon=: label.drawing=off \
            --add item front_app left \
-           --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
+           --set front_app icon.font="sketchybar-app-font:Regular:16.0" \
+                 icon.drawing=on script="$PLUGIN_DIR/front_app.sh" \
            --subscribe front_app front_app_switched
+
+# AeroSpace "window" binding-mode badge. Hidden by default; the aerospace.toml
+# window-mode bindings flip drawing on/off via `sketchybar --set window_mode`.
+sketchybar --add item window_mode left \
+           --set window_mode drawing=off \
+                 icon="●" icon.color=0xffe0af68 icon.padding_left=8 \
+                 label="WINDOW" label.color=0xffe0af68 \
+                 label.padding_right=8 \
+                 background.color=0x40e0af68 background.corner_radius=4 \
+                 background.height=24 background.padding_left=3 \
+                 background.padding_right=3 background.drawing=on
+
+# ── Window-mode cheatsheet popup ──
+# Rows drop down under the WINDOW badge. Shown/hidden together with the badge:
+# aerospace.toml flips `popup.drawing=on/off` on the same item.
+sketchybar --set window_mode \
+  popup.blur_radius=30 \
+  popup.background.color=0xb0101010 \
+  popup.background.corner_radius=8 \
+  popup.background.border_width=2 \
+  popup.background.border_color=0xffe0af68 \
+  popup.background.shadow.drawing=on \
+  popup.y_offset=6
+
+wm_row=( icon.font="VictorMono Nerd Font:Bold:13.0"
+  label.font="VictorMono Nerd Font:Regular:13.0"
+  icon.color=0xffe0af68 label.color=0xffc6c6c6
+  icon.padding_left=12 icon.padding_right=10
+  label.padding_right=14 background.drawing=off )
+
+wm_i=0
+wm_add_row() {
+  sketchybar --add item wm.$wm_i popup.window_mode \
+    --set wm.$wm_i "${wm_row[@]}" icon="$1" label="$2"
+  wm_i=$((wm_i+1))
+}
+wm_add_row "h a e i f o u ;" "focus workspace"
+wm_add_row "⇧ + letter     " "send window → workspace"
+wm_add_row "t / c          " "tiles / accordion"
+wm_add_row "w / ↩          " "float / fullscreen"
+wm_add_row "− / = / b      " "shrink / grow / balance"
+wm_add_row "← / →          " "join left / right"
+wm_add_row "r / ⌫          " "reset tree / close others"
+wm_add_row "y / ⇥          " "next monitor / back-and-forth"
+wm_add_row "q / esc        " "reload config / exit"
 
 ##### Adding Right Items #####
 # In the same way as the left items we can add items to the right side.
@@ -93,13 +140,7 @@ sketchybar --add item clock right \
 # Each right-side status item gets its own subtle pill background
 
 for item in clock volume battery; do
-  sketchybar --set $item \
-    background.color=0x40393925 \
-    background.corner_radius=4 \
-    background.height=24 \
-    background.padding_left=3 \
-    background.padding_right=3 \
-    background.drawing=on
+  sketchybar --set $item "${pill[@]}"
 done
 
 ##### Force all scripts to run the first time (never do this in a script) #####

@@ -15,3 +15,8 @@ doom/CLAUDE.md
 zed/conversations/
 zed/prompts/
 zed/settings_backup.json
+
+# Editor lock/autosave files and macOS cruft
+\#*\#
+.\#*
+.DS_Store
