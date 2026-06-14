@@ -43,7 +43,9 @@ on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 
 # Mouse follows focus when focused window changes
 # Disabled: re-centering the cursor on every keyboard focus change is jarring.
-# on-focus-changed = ['move-mouse window-lazy-center']
+# Record focus history so cmd-` can jump back to the previously focused window
+# (across workspaces). See scripts/track-focus.sh + scripts/focus-prev.sh.
+on-focus-changed = ['exec-and-forget ~/.config/aerospace/scripts/track-focus.sh']
 
 # You can effectively turn off macOS "Hide application" (cmd-h) feature by toggling this flag
 # Useful if you don't use this macOS feature, but accidentally hit cmd-h or cmd-alt-h key
@@ -131,8 +133,8 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     cmd-alt-shift-ctrl-e = 'move up'
     cmd-alt-shift-ctrl-i = 'move right --boundaries all-monitors-outer-frame'
 
-    # ── Last-window toggle (⌘` = hold t, tap backtick)
-    cmd-backtick = 'focus-back-and-forth'
+    # ── Jump to previously focused window, across workspaces (⌘`)
+    cmd-backtick = 'exec-and-forget ~/.config/aerospace/scripts/focus-prev.sh'
 
     # ── Cycle workspaces (Meh ' = prev, Meh / = next; wraps at the ends)
     cmd-alt-shift-quote = 'workspace --wrap-around --no-stdin prev'
