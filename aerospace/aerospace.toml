@@ -137,8 +137,11 @@ exec-on-workspace-change = ['/bin/bash', '-c',
     cmd-backtick = 'exec-and-forget ~/.config/aerospace/scripts/focus-prev.sh'
 
     # ── Cycle workspaces (Meh ' = prev, Meh / = next; wraps at the ends)
-    cmd-alt-shift-quote = 'workspace --wrap-around --no-stdin prev'
-    cmd-alt-shift-slash = 'workspace --wrap-around --no-stdin next'
+    # Anchored to the focused *window's* monitor, not the monitor under the
+    # mouse — AeroSpace's built-in `workspace next|prev` drifts to the last
+    # clicked monitor. See scripts/workspace-cycle.sh.
+    cmd-alt-shift-quote = 'exec-and-forget ~/.config/aerospace/scripts/workspace-cycle.sh prev'
+    cmd-alt-shift-slash = 'exec-and-forget ~/.config/aerospace/scripts/workspace-cycle.sh next'
 
     # ── Send window to prev/next workspace + follow (Meh+Ctrl ' or /)
     # --no-stdin is required for next/prev since AeroSpace v0.20.0.
