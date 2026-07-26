@@ -10,6 +10,7 @@
 !/zed/
 !/yazi/
 !/helix/
+!/ghostty/
 
 # Ignore generated files
 doom/config.el

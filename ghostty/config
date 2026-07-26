@@ -1,0 +1,29 @@
+#theme = "Kanagawa Wave"
+#theme = "Catppuccin Mocha"
+theme = rinde-modus
+
+font-family = "VictorMono NF"
+font-style = "Light"
+font-style-italic = "Medium Italic"
+font-size = 15
+
+window-padding-x = 6
+window-padding-y = 6
+
+window-save-state = always
+
+macos-titlebar-style = hidden
+
+# Left Option sends Alt, so terminal Alt- bindings work (helix A-o / A-i
+# treesitter expand/shrink). Right Option is left alone to keep Polish Pro's
+# Option diacritics -- ó, ą, ę, ł ...
+# Needed because the unset default is only "true" on U.S./U.S. International
+# layouts; on Polish Pro it falls back to "false".
+macos-option-as-alt = left
+
+background-opacity = 0.95
+background-blur-radius = 10
+
+#keybind = shift+ctrl+alt+super+s=unbind
+#key-remap = super=ctrl
+#keybind = shift+enter=text:\x1b\r
