@@ -1,0 +1,15 @@
+# JetBrains kotlin-lsp instead of the unmaintained fwcd kotlin-language-server.
+# The fwcd server can't resolve Gradle/Android dependencies, so every Android
+# import shows up as "Unresolved reference". Mirrors ~/.config/zed/settings.json.
+[language-server.kotlin-lsp]
+command = "/opt/homebrew/bin/kotlin-lsp"
+args = ["--stdio"]
+# Gradle import + indexing on a cold cache blows past the 20s default.
+timeout = 120
+
+[[language]]
+name = "kotlin"
+language-servers = ["kotlin-lsp"]
+# Anchor the workspace at the Gradle root so the whole project gets imported,
+# not just the module the opened file happens to live in.
+roots = ["settings.gradle.kts", "settings.gradle", "build.gradle.kts", "build.gradle"]

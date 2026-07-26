@@ -1,0 +1,104 @@
+theme = "meliora"
+
+[editor]
+lsp.display-inlay-hints = true
+
+[editor.inline-diagnostics]
+cursor-line = "hint"
+
+[editor.cursor-shape]
+insert = "bar"
+
+
+# Gallium layout remap, mirrors ~/.config/zed/keymap.json
+#
+# Movement moves to h/a/e/i, and everything it displaces cascades:
+#   i (insert)         -> l
+#   a (append)         -> s
+#   e (next word end)  -> k
+#   s (select regex)   -> j
+#   j (join)           -> A
+
+[keys.normal]
+h = "move_char_left"
+a = "move_visual_line_down"
+e = "move_visual_line_up"
+i = "move_char_right"
+
+l = "insert_mode"
+s = "append_mode"
+k = "move_next_word_end"
+j = "select_regex"
+
+L = "insert_at_line_start"
+S = "insert_at_line_end"
+K = "move_next_long_word_end"
+J = "split_selection"
+A = "join_selections"
+I = "goto_next_buffer"
+E = "no_op"
+
+# lazygit in its own Ghostty window, scoped to helix's cwd
+"C-g" = ":sh open -na Ghostty --args -e lazygit -p $PWD"
+# yazi as a file picker: same Ghostty-window pattern, but the wrapper waits for
+# yazi's --chooser-file and feeds the pick back to :open in this instance.
+# One :open per file -- an expansion is always a single argument, so multiple
+# picks have to be pulled off the wrapper's queue one at a time. Four slots;
+# spare ones re-open the last pick and are silent no-ops. Add lines for more.
+"C-y" = [
+	":open %sh{~/.config/helix/yazi-pick.sh first}",
+	":open %sh{~/.config/helix/yazi-pick.sh next}",
+	":open %sh{~/.config/helix/yazi-pick.sh next}",
+	":open %sh{~/.config/helix/yazi-pick.sh next}",
+]
+
+[keys.normal.space]
+space = "file_picker"
+e = "file_explorer"
+"," = "buffer_picker"
+# reload buffers from disk after branch/stash ops in lazygit (C-g) or file ops in yazi (C-y)
+G = ":reload-all"
+
+[keys.normal."C-w"]
+h = "jump_view_left"
+a = "jump_view_down"
+e = "jump_view_up"
+i = "jump_view_right"
+
+[keys.select]
+h = "extend_char_left"
+a = "extend_visual_line_down"
+e = "extend_visual_line_up"
+i = "extend_char_right"
+
+l = "insert_mode"
+s = "append_mode"
+k = "extend_next_word_end"
+j = "select_regex"
+
+L = "insert_at_line_start"
+S = "insert_at_line_end"
+K = "extend_next_long_word_end"
+J = "split_selection"
+A = "join_selections"
+E = "no_op"
+
+"C-g" = ":sh open -na Ghostty --args -e lazygit -p $PWD"
+"C-y" = [
+	":open %sh{~/.config/helix/yazi-pick.sh first}",
+	":open %sh{~/.config/helix/yazi-pick.sh next}",
+	":open %sh{~/.config/helix/yazi-pick.sh next}",
+	":open %sh{~/.config/helix/yazi-pick.sh next}",
+]
+
+[keys.select.space]
+space = "file_picker"
+e = "file_explorer"
+"," = "buffer_picker"
+G = ":reload-all"
+
+[keys.select."C-w"]
+h = "jump_view_left"
+a = "jump_view_down"
+e = "jump_view_up"
+i = "jump_view_right"
