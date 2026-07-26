@@ -38,6 +38,10 @@ A = "join_selections"
 I = "goto_next_buffer"
 E = "no_op"
 
+# paragraph motions, vim-style aliases for the built-in [p / ]p
+"{" = "goto_prev_paragraph"
+"}" = "goto_next_paragraph"
+
 # lazygit in its own Ghostty window, scoped to helix's cwd
 "C-g" = ":sh open -na Ghostty --args -e lazygit -p $PWD"
 # yazi as a file picker: same Ghostty-window pattern, but the wrapper waits for
@@ -82,6 +86,10 @@ K = "extend_next_long_word_end"
 J = "split_selection"
 A = "join_selections"
 E = "no_op"
+
+# these extend rather than move when invoked from select mode
+"{" = "goto_prev_paragraph"
+"}" = "goto_next_paragraph"
 
 "C-g" = ":sh open -na Ghostty --args -e lazygit -p $PWD"
 "C-y" = [
