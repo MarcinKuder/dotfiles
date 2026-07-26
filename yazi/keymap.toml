@@ -1,0 +1,140 @@
+#:schema https://yazi-rs.github.io/schemas/keymap.json
+
+# Gallium layout remap, mirrors ~/.config/helix/config.toml and ~/.config/zed/keymap.json.
+#
+# Movement moves to h/a/e/i everywhere, and what it displaces cascades:
+#
+#   [mgr] and friends          [input] (the vim-ish line editor)
+#     l (enter child)  -> i      l (move right)     -> i
+#     L (forward)      -> I      i (insert)         -> l
+#     J/K (preview seek) -> A/E  a (append)         -> s
+#     a (create)       -> +      e (next word end)  -> k
+#                                s (cut char, insert) -> j
+#
+# Keys vacated by the remap are bound to `noop` rather than left on their
+# defaults, so old muscle memory fails loudly instead of silently working.
+#
+# These are prepend_keymap blocks: they win over the presets, everything else
+# in https://github.com/sxyazi/yazi/blob/main/yazi-config/preset/keymap-default.toml
+# still applies untouched.
+
+[mgr]
+
+prepend_keymap = [
+	# Hopping -- h stays on `leave`, so only three of the four move
+	{ on = "a", run = "arrow next", desc = "Next file" },
+	{ on = "e", run = "arrow prev", desc = "Previous file" },
+	{ on = "i", run = "enter",      desc = "Enter the child directory" },
+
+	# History. H (back) keeps its default; L (forward) follows `i` up to I
+	{ on = "I", run = "forward", desc = "Forward to next directory" },
+
+	# Preview seeking, was J/K
+	{ on = "A", run = "seek 5",  desc = "Seek down 5 units in the preview" },
+	{ on = "E", run = "seek -5", desc = "Seek up 5 units in the preview" },
+
+	# `a` was create; + reads as "new" and was unbound
+	# (- is symlink, _ is relative symlink, <C--> is hardlink)
+	{ on = "+", run = "create", desc = "Create a file (ends with / for directories)" },
+
+	# Vacated
+	{ on = "j", run = "noop" },
+	{ on = "k", run = "noop" },
+	{ on = "l", run = "noop" },
+	{ on = "J", run = "noop" },
+	{ on = "K", run = "noop" },
+	{ on = "L", run = "noop" },
+]
+
+[tasks]
+
+prepend_keymap = [
+	{ on = "a", run = "arrow next", desc = "Next task" },
+	{ on = "e", run = "arrow prev", desc = "Previous task" },
+
+	{ on = "j", run = "noop" },
+	{ on = "k", run = "noop" },
+]
+
+[spot]
+
+prepend_keymap = [
+	{ on = "a", run = "arrow next", desc = "Next line" },
+	{ on = "e", run = "arrow prev", desc = "Previous line" },
+	{ on = "i", run = "swipe next", desc = "Swipe to next file" },
+
+	{ on = "j", run = "noop" },
+	{ on = "k", run = "noop" },
+	{ on = "l", run = "noop" },
+]
+
+[pick]
+
+prepend_keymap = [
+	{ on = "a", run = "arrow next", desc = "Next option" },
+	{ on = "e", run = "arrow prev", desc = "Previous option" },
+
+	{ on = "j", run = "noop" },
+	{ on = "k", run = "noop" },
+]
+
+[confirm]
+
+prepend_keymap = [
+	{ on = "a", run = "arrow next", desc = "Next line" },
+	{ on = "e", run = "arrow prev", desc = "Previous line" },
+
+	{ on = "j", run = "noop" },
+	{ on = "k", run = "noop" },
+]
+
+[cmp]
+
+prepend_keymap = [
+	{ on = "<A-a>", run = "arrow next", desc = "Next item" },
+	{ on = "<A-e>", run = "arrow prev", desc = "Previous item" },
+
+	{ on = "<A-j>", run = "noop" },
+	{ on = "<A-k>", run = "noop" },
+]
+
+[help]
+
+prepend_keymap = [
+	{ on = "a", run = "arrow next", desc = "Next line" },
+	{ on = "e", run = "arrow prev", desc = "Previous line" },
+
+	{ on = "j", run = "noop" },
+	{ on = "k", run = "noop" },
+]
+
+[input]
+
+# Single-line, so only left/right movement exists -- h keeps `move -1` and l
+# hands `move 1` to i. The rest is the same cascade as the Helix keymap.
+prepend_keymap = [
+	# Character-wise movement
+	{ on = "i", run = "move 1", desc = "Move forward a character" },
+
+	# Mode, was i/I and a/A
+	{ on = "l", run = "insert",                          desc = "Enter insert mode" },
+	{ on = "L", run = [ "move first-char", "insert" ],   desc = "Move to the BOL, and enter insert mode" },
+	{ on = "s", run = "insert --append",                 desc = "Enter append mode" },
+	{ on = "S", run = [ "move eol", "insert --append" ], desc = "Move to the EOL, and enter append mode" },
+
+	# Word-wise movement, was e/E
+	{ on = "k", run = "forward --end-of-word",       desc = "Move forward to the end of the current or next word" },
+	{ on = "K", run = "forward --far --end-of-word", desc = "Move forward to the end of the current or next WORD" },
+
+	# Cut+insert, pushed off s/S by append
+	{ on = "j", run = [ "delete --cut --insert", "move 1" ],               desc = "Cut current character, and enter insert mode" },
+	{ on = "J", run = [ "move bol", "delete --cut --insert", "move eol" ], desc = "Cut from BOL until EOL, and enter insert mode" },
+
+	# Vacated. a/e have nothing to do here -- the input is one line, so there
+	# is no up/down for them to inherit the way there is in Helix
+	{ on = "a", run = "noop" },
+	{ on = "e", run = "noop" },
+	{ on = "A", run = "noop" },
+	{ on = "E", run = "noop" },
+	{ on = "I", run = "noop" },
+]

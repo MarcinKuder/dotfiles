@@ -8,6 +8,7 @@
 !/sketchybar/
 !/doom/
 !/zed/
+!/yazi/
 
 # Ignore generated files
 doom/config.el
