@@ -15,9 +15,10 @@ insert = "bar"
 # Movement moves to h/a/e/i, and everything it displaces cascades:
 #   i (insert)         -> l
 #   a (append)         -> s
-#   e (next word end)  -> k
+#   e (next word end)  -> '
 #   s (select regex)   -> j
 #   j (join)           -> A
+#   " (select register) -> k
 
 [keys.normal]
 h = "move_char_left"
@@ -27,16 +28,19 @@ i = "move_char_right"
 
 l = "insert_mode"
 s = "append_mode"
-k = "move_next_word_end"
+"'" = "move_next_word_end"
 j = "select_regex"
 
 L = "insert_at_line_start"
 S = "insert_at_line_end"
-K = "move_next_long_word_end"
+'"' = "move_next_long_word_end"
 J = "split_selection"
 A = "join_selections"
 I = "goto_next_buffer"
 E = "no_op"
+
+# " is taken by the word-end motions above, so registers move to k
+k = "select_register"
 
 # paragraph motions, vim-style aliases for the built-in [p / ]p
 "{" = "goto_prev_paragraph"
@@ -80,15 +84,17 @@ i = "extend_char_right"
 
 l = "insert_mode"
 s = "append_mode"
-k = "extend_next_word_end"
+"'" = "extend_next_word_end"
 j = "select_regex"
 
 L = "insert_at_line_start"
 S = "insert_at_line_end"
-K = "extend_next_long_word_end"
+'"' = "extend_next_long_word_end"
 J = "split_selection"
 A = "join_selections"
 E = "no_op"
+
+k = "select_register"
 
 # these extend rather than move when invoked from select mode
 "{" = "goto_prev_paragraph"
